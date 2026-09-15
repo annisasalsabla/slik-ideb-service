@@ -20,7 +20,9 @@ public class PlaywrightConfig {
 
     @Bean
     public Playwright playwright() {
-        playwright = Playwright.create();
+        Playwright.CreateOptions options = new Playwright.CreateOptions();
+        options.setEnv(java.util.Map.of("PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD", "1"));
+        playwright = Playwright.create(options);
         return playwright;
     }
 
