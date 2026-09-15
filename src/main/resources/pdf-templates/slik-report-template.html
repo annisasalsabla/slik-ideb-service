@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xml:lang="id" lang="id">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Laporan SLIK - Informasi Debitur (IDEB)</title>
+    <style type="text/css">
+        @page {
+            size: A4;
+            margin: 2cm;
+        }
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 11pt;
+            color: #222222;
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            background-color: #003087;
+            color: white;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+        }
+        .header-title {
+            margin: 0;
+            font-size: 16pt;
+            text-align: center;
+            font-weight: bold;
+        }
+        .header-subtitle {
+            margin: 5px 0 0 0;
+            font-size: 10pt;
+            text-align: center;
+            color: #cce0ff;
+        }
+        .meta-info {
+            border: 1px solid #003087;
+            padding: 10px 15px;
+            margin-bottom: 15px;
+            background-color: #f5f8ff;
+        }
+        .meta-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .meta-table td {
+            padding: 3px 8px;
+            font-size: 10pt;
+        }
+        .meta-label {
+            font-weight: bold;
+            width: 30%;
+            color: #003087;
+        }
+        .section-title {
+            background-color: #003087;
+            color: white;
+            padding: 5px 10px;
+            font-size: 11pt;
+            font-weight: bold;
+            margin-top: 15px;
+            margin-bottom: 8px;
+        }
+        .detail-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 10pt;
+            margin-bottom: 15px;
+        }
+        .detail-table th {
+            background-color: #4472c4;
+            color: white;
+            padding: 7px 10px;
+            text-align: left;
+            border: 1px solid #2e5096;
+        }
+        .detail-table td {
+            padding: 6px 10px;
+            border: 1px solid #cccccc;
+        }
+        .detail-table .row-even td {
+            background-color: #e8f0fe;
+        }
+        .status-lancar {
+            color: #1a7a1a;
+            font-weight: bold;
+        }
+        .status-macet {
+            color: #cc0000;
+            font-weight: bold;
+        }
+        .status-dpk {
+            color: #e68a00;
+            font-weight: bold;
+        }
+        .summary-box {
+            border: 2px solid #003087;
+            padding: 12px 15px;
+            margin: 15px 0;
+            background-color: #f0f4ff;
+        }
+        .summary-title {
+            margin: 0 0 10px 0;
+            color: #003087;
+            font-size: 11pt;
+            font-weight: bold;
+        }
+        .summary-table {
+            width: 100%;
+        }
+        .footer {
+            border-top: 2px solid #003087;
+            margin-top: 20px;
+            padding-top: 8px;
+            font-size: 8pt;
+            color: #666666;
+            text-align: center;
+        }
+        .disclaimer {
+            font-size: 8pt;
+            color: #888888;
+            border: 1px solid #cccccc;
+            padding: 8px;
+            margin-top: 10px;
+            font-style: italic;
+        }
+        .badge-lancar {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 2px 8px;
+            font-weight: bold;
+        }
+        .badge-macet {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 2px 8px;
+            font-weight: bold;
+        }
+        .badge-dpk {
+            background-color: #fff3cd;
+            color: #856404;
+            padding: 2px 8px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<div class="header">
+    <h1 class="header-title">LAPORAN SLIK &#8212; INFORMASI DEBITUR (IDEB)</h1>
+    <p class="header-subtitle">Sistem Layanan Informasi Keuangan &#8212; Otoritas Jasa Keuangan</p>
+</div>
+
+<!-- ===== META INFO ===== -->
+<div class="meta-info">
+    <table class="meta-table">
+        <tr>
+            <td class="meta-label">Tanggal Generate</td>
+            <td>: <span th:text="${generatedAt}">01/01/2026 10:00:00</span></td>
+            <td class="meta-label">Request ID</td>
+            <td>: <span th:text="${requestId}">xxxx-xxxx</span></td>
+        </tr>
+        <tr>
+            <td class="meta-label">Nama Debitur</td>
+            <td>: <span th:text="${nasabahName}">-</span></td>
+            <td class="meta-label">NIK</td>
+            <td>: <span th:text="${nik}">-</span></td>
+        </tr>
+        <tr>
+            <td class="meta-label">Tanggal Jatuh Tempo</td>
+            <td>: <span th:text="${tanggalJatuhTempo}">-</span></td>
+            <td class="meta-label">Kolektibilitas</td>
+            <td>: <span th:text="${kolektibilitas}">-</span></td>
+        </tr>
+    </table>
+</div>
+
+<!-- ===== INFORMASI KREDIT ===== -->
+<div class="section-title">DETAIL FASILITAS KREDIT</div>
+<table class="detail-table">
+    <thead>
+        <tr>
+            <th>Keterangan</th>
+            <th>Nilai</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Nama Bank / Kreditur</td>
+            <td th:text="${namaBank}">-</td>
+        </tr>
+        <tr class="row-even">
+            <td>Status Kredit</td>
+            <td>
+                <span th:text="${statusKredit}"
+                      th:class="${statusKredit == 'LANCAR' ? 'status-lancar' : (statusKredit == 'MACET' ? 'status-macet' : 'status-dpk')}">-</span>
+            </td>
+        </tr>
+        <tr>
+            <td>Nominal Tagihan</td>
+            <td th:text="${nominalTagihan}">-</td>
+        </tr>
+        <tr class="row-even">
+            <td>Kolektibilitas</td>
+            <td th:text="${kolektibilitas}">-</td>
+        </tr>
+        <tr>
+            <td>Tanggal Jatuh Tempo</td>
+            <td th:text="${tanggalJatuhTempo}">-</td>
+        </tr>
+    </tbody>
+</table>
+
+<!-- ===== RINGKASAN STATUS ===== -->
+<div class="section-title">RINGKASAN STATUS KREDIT</div>
+<div class="summary-box">
+    <h3 class="summary-title">Status Kredit Debitur</h3>
+    <table class="summary-table">
+        <tr>
+            <td style="width:50%">
+                <strong>Status saat ini:</strong>
+                <span th:text="${statusKredit}"
+                      th:class="${statusKredit == 'LANCAR' ? 'badge-lancar' : (statusKredit == 'MACET' ? 'badge-macet' : 'badge-dpk')}">
+                    -
+                </span>
+            </td>
+            <td>
+                <strong>Kolektibilitas:</strong> <span th:text="${kolektibilitas}">-</span>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<!-- ===== DISCLAIMER ===== -->
+<div class="disclaimer">
+    <strong>DISCLAIMER:</strong> Laporan ini dibuat secara otomatis oleh sistem SLIK IDEB Service
+    berdasarkan data yang tersedia pada saat generate. Data ini bersifat konfidensial dan hanya
+    untuk keperluan internal lembaga keuangan yang berwenang. Penggunaan di luar ketentuan yang
+    berlaku merupakan pelanggaran hukum.
+</div>
+
+<!-- ===== FOOTER ===== -->
+<div class="footer">
+    <p>SLIK IDEB Service &#8212; Skyworx &#169; 2026 &#8212; Halaman 1 dari 1</p>
+    <p>Dokumen ini di-generate secara otomatis pada <span th:text="${generatedAt}">-</span></p>
+</div>
+
+</body>
+</html>
