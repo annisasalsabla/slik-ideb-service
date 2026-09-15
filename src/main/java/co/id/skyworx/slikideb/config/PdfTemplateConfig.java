@@ -9,7 +9,8 @@ import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
 /**
  * Dedicated Thymeleaf template engine for PDF rendering.
- * Uses XML template mode to ensure strict XHTML compliance required by Flying Saucer.
+ * Uses XML template mode to ensure strict XHTML compliance required by Flying
+ * Saucer.
  */
 @Configuration
 public class PdfTemplateConfig {

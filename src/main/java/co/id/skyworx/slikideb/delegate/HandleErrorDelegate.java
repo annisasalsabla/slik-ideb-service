@@ -13,7 +13,8 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * BPMN Service Task delegate for handling and persisting workflow execution failures.
+ * BPMN Service Task delegate for handling and persisting workflow execution
+ * failures.
  */
 @Component("handleErrorDelegate")
 @RequiredArgsConstructor
@@ -56,7 +57,8 @@ public class HandleErrorDelegate implements JavaDelegate {
                 .errorMessage(errorMessage)
                 .failedTask(failedTask)
                 .stacktraceSummary(errorMessage.length() > 500
-                        ? errorMessage.substring(0, 500) + "..." : errorMessage)
+                        ? errorMessage.substring(0, 500) + "..."
+                        : errorMessage)
                 .build();
         failureLogRepository.save(failureLog);
 

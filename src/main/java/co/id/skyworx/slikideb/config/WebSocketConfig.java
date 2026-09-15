@@ -7,7 +7,8 @@ import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
 /**
- * STOMP over WebSocket configuration supporting both SockJS and pure WebSocket clients.
+ * STOMP over WebSocket configuration supporting both SockJS and pure WebSocket
+ * clients.
  */
 @Configuration
 @EnableWebSocketMessageBroker
