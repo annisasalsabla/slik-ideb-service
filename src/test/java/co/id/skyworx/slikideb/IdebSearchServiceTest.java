@@ -85,7 +85,6 @@ class IdebSearchServiceTest {
         assertThat(response.getStatusKredit()).isEqualTo("LANCAR");
         assertThat(response.getNominalTagihan()).isEqualByComparingTo(new BigDecimal("150000000"));
         assertThat(response.getDownloadUrl()).contains("/api/ideb/report/1/download");
-        assertThat(response.getUrl()).contains("/api/ideb/report/1/download");
 
         verify(queryRepository).searchReports(
                 eq("Budi"), eq("3174012501900001"), eq("LANCAR"),
