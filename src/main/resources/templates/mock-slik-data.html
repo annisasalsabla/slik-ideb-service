@@ -1,0 +1,321 @@
+﻿<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data SLIK IDEB - Portal OJK (Mock)</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f0f4f8;
+            color: #333;
+        }
+        .top-bar {
+            background: #003087;
+            color: white;
+            padding: 8px 20px;
+            font-size: 12px;
+            text-align: right;
+        }
+        .header {
+            background: linear-gradient(135deg, #003087 0%, #0055c7 100%);
+            color: white;
+            padding: 20px 40px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .header .logo {
+            width: 60px;
+            height: 60px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #003087;
+            font-size: 20px;
+        }
+        .header h1 { font-size: 22px; }
+        .header p { font-size: 13px; opacity: 0.8; margin-top: 4px; }
+        .nav {
+            background: #0044b0;
+            padding: 0 40px;
+            display: flex;
+            gap: 0;
+        }
+        .nav a {
+            color: white;
+            text-decoration: none;
+            padding: 12px 20px;
+            font-size: 13px;
+            display: block;
+        }
+        .nav a:hover, .nav a.active { background: rgba(255,255,255,0.15); }
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        .card-header {
+            background: #003087;
+            color: white;
+            padding: 12px 20px;
+            font-weight: bold;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .card-body { padding: 20px; }
+        .search-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 0;
+        }
+        .search-bar input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .btn-primary { background: #003087; color: white; }
+        .btn-primary:hover { background: #0044b0; }
+        .info-bar {
+            background: #e8f0fe;
+            border-left: 4px solid #003087;
+            padding: 10px 15px;
+            font-size: 13px;
+            margin: 15px 0;
+            color: #003087;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        thead th {
+            background: #003087;
+            color: white;
+            padding: 10px 12px;
+            text-align: left;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        tbody tr { transition: background 0.2s; }
+        tbody tr:hover { background: #f0f4ff; }
+        tbody td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #eee;
+        }
+        .badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .badge-lancar { background: #d4edda; color: #155724; }
+        .badge-dpk { background: #fff3cd; color: #856404; }
+        .badge-kurang { background: #ffe5b4; color: #cc5500; }
+        .badge-diragukan { background: #ffd6cc; color: #993300; }
+        .badge-macet { background: #f8d7da; color: #721c24; }
+        .nominal { text-align: right; font-family: monospace; }
+        .footer {
+            background: #222;
+            color: #aaa;
+            padding: 15px 40px;
+            text-align: center;
+            font-size: 12px;
+            margin-top: 30px;
+        }
+        .disclaimer {
+            background: #fffbe6;
+            border: 1px solid #ffe58f;
+            padding: 10px 15px;
+            font-size: 12px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="top-bar">
+    Senin, 15 September 2026 &nbsp;|&nbsp; Portal SLIK OJK &nbsp;|&nbsp; Versi 3.1.2
+</div>
+
+<div class="header">
+    <div class="logo">OJK</div>
+    <div>
+        <h1>Sistem Layanan Informasi Keuangan (SLIK)</h1>
+        <p>Informasi Debitur (IDEB) &mdash; Portal Resmi Otoritas Jasa Keuangan</p>
+    </div>
+</div>
+
+<nav class="nav">
+    <a href="#" class="active">Beranda</a>
+    <a href="#">Permintaan IDEB</a>
+    <a href="#">Riwayat</a>
+    <a href="#">Bantuan</a>
+</nav>
+
+<div class="container">
+
+    <div class="card">
+        <div class="card-header">
+            &#128269; Pencarian Data Debitur
+        </div>
+        <div class="card-body">
+            <div class="search-bar">
+                <input type="text" placeholder="Masukkan NIK atau Nama Debitur...">
+                <button class="btn btn-primary">Cari</button>
+                <button class="btn" style="background:#eee">Reset</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="disclaimer">
+        &#9888; Data berikut adalah data simulasi untuk keperluan pengujian sistem.
+        Data aktual SLIK/IDEB bersifat rahasia dan dilindungi undang-undang.
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            &#128196; Daftar Informasi Debitur (IDEB)
+        </div>
+        <div class="card-body">
+            <div class="info-bar">
+                Menampilkan 8 data debitur &mdash; Hasil per halaman: 10 &mdash;
+                Status terakhir diperbarui: 15 Sep 2026
+            </div>
+
+            <!--
+                Tabel utama target scraping Playwright.
+                Setiap <tr> memiliki data-nik dan data-nama untuk lookup.
+                Class CSS konsisten: col-status, col-nominal, col-bank, col-jatuh-tempo, col-kolektibilitas
+            -->
+            <table id="table-slik">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>NIK</th>
+                        <th>Nama Debitur</th>
+                        <th>Status Kredit</th>
+                        <th>Nominal Tagihan (Rp)</th>
+                        <th>Nama Bank / Kreditur</th>
+                        <th>Tgl. Jatuh Tempo</th>
+                        <th>Kolektibilitas</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr data-nik="3174012501900001" data-nama="Budi Santoso">
+                        <td>1</td>
+                        <td>3174012501900001</td>
+                        <td>Budi Santoso</td>
+                        <td><span class="badge badge-lancar col-status">LANCAR</span></td>
+                        <td class="nominal col-nominal">150,000,000</td>
+                        <td class="col-bank">Bank Mandiri</td>
+                        <td class="col-jatuh-tempo">15/12/2026</td>
+                        <td class="col-kolektibilitas">1</td>
+                    </tr>
+                    <tr data-nik="3273055506850002" data-nama="Siti Rahayu">
+                        <td>2</td>
+                        <td>3273055506850002</td>
+                        <td>Siti Rahayu</td>
+                        <td><span class="badge badge-dpk col-status">DALAM PERHATIAN KHUSUS</span></td>
+                        <td class="nominal col-nominal">85,000,000</td>
+                        <td class="col-bank">Bank BRI</td>
+                        <td class="col-jatuh-tempo">20/10/2026</td>
+                        <td class="col-kolektibilitas">2</td>
+                    </tr>
+                    <tr data-nik="3578041204920003" data-nama="Ahmad Fauzi">
+                        <td>3</td>
+                        <td>3578041204920003</td>
+                        <td>Ahmad Fauzi</td>
+                        <td><span class="badge badge-macet col-status">MACET</span></td>
+                        <td class="nominal col-nominal">320,000,000</td>
+                        <td class="col-bank">Bank BCA</td>
+                        <td class="col-jatuh-tempo">01/03/2025</td>
+                        <td class="col-kolektibilitas">5</td>
+                    </tr>
+                    <tr data-nik="3471061507880004" data-nama="Dewi Kusumawati">
+                        <td>4</td>
+                        <td>3471061507880004</td>
+                        <td>Dewi Kusumawati</td>
+                        <td><span class="badge badge-lancar col-status">LANCAR</span></td>
+                        <td class="nominal col-nominal">210,500,000</td>
+                        <td class="col-bank">Bank BNI</td>
+                        <td class="col-jatuh-tempo">30/06/2027</td>
+                        <td class="col-kolektibilitas">1</td>
+                    </tr>
+                    <tr data-nik="3201091809910005" data-nama="Rizky Ramadhan">
+                        <td>5</td>
+                        <td>3201091809910005</td>
+                        <td>Rizky Ramadhan</td>
+                        <td><span class="badge badge-kurang col-status">KURANG LANCAR</span></td>
+                        <td class="nominal col-nominal">45,750,000</td>
+                        <td class="col-bank">Bank CIMB Niaga</td>
+                        <td class="col-jatuh-tempo">10/08/2026</td>
+                        <td class="col-kolektibilitas">3</td>
+                    </tr>
+                    <tr data-nik="3374022203950006" data-nama="Indah Permatasari">
+                        <td>6</td>
+                        <td>3374022203950006</td>
+                        <td>Indah Permatasari</td>
+                        <td><span class="badge badge-lancar col-status">LANCAR</span></td>
+                        <td class="nominal col-nominal">500,000,000</td>
+                        <td class="col-bank">Bank Danamon</td>
+                        <td class="col-jatuh-tempo">01/01/2028</td>
+                        <td class="col-kolektibilitas">1</td>
+                    </tr>
+                    <tr data-nik="3509030506870007" data-nama="Hendra Wijaya">
+                        <td>7</td>
+                        <td>3509030506870007</td>
+                        <td>Hendra Wijaya</td>
+                        <td><span class="badge badge-diragukan col-status">DIRAGUKAN</span></td>
+                        <td class="nominal col-nominal">125,000,000</td>
+                        <td class="col-bank">Bank Permata</td>
+                        <td class="col-jatuh-tempo">15/05/2025</td>
+                        <td class="col-kolektibilitas">4</td>
+                    </tr>
+                    <tr data-nik="3173082808930008" data-nama="Maya Angelina">
+                        <td>8</td>
+                        <td>3173082808930008</td>
+                        <td>Maya Angelina</td>
+                        <td><span class="badge badge-lancar col-status">LANCAR</span></td>
+                        <td class="nominal col-nominal">75,000,000</td>
+                        <td class="col-bank">Bank Panin</td>
+                        <td class="col-jatuh-tempo">15/09/2027</td>
+                        <td class="col-kolektibilitas">1</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="footer">
+    &copy; 2026 Otoritas Jasa Keuangan (OJK) &mdash; Sistem Layanan Informasi Keuangan (SLIK) &mdash;
+    MOCK DATA FOR TESTING PURPOSES ONLY
+</div>
+
+</body>
+</html>
