@@ -1,12 +1,26 @@
-# Folder Screenshots untuk Dokumentasi & Pengiriman
+# Folder Dokumentasi Visual
 
-Folder ini digunakan untuk menyimpan gambar screenshot yang diminta oleh reviewer teknikal:
+Bukti fungsionalitas aplikasi disajikan dalam bentuk **video demo** yang mencakup
+seluruh alur pengujian secara end-to-end.
 
-1. `bpmn-flowable-diagram.png`: Screenshot diagram BPMN alur `idebReportProcess` (termasuk Service Tasks dan Boundary Error Events).
-2. `hoppscotch-scrape-request.png`: Screenshot eksekusi request POST `/api/ideb/scrape` di Hoppscotch (Response HTTP 202).
-3. `websocket-realtime-tester.png`: Screenshot UI `http://localhost:8080/ws-tester.html` yang menampilkan logs realtime berturutan (`SCRAPING`, `VALIDATING`, `GENERATING_PDF`, `SAVING`, `SUCCESS`).
-4. `tableplus-ideb-reports.png`: Screenshot query TablePlus yang menampilkan record data di tabel `ideb_reports` dan tabel Flowable `act_hi_procinst`.
-5. `pdf-ideb-sample.png`: Screenshot hasil dokumen PDF Laporan SLIK / IDEB yang berhasil di-generate.
+## Video Demo
+
+> Link video demo: **[Lampirkan link video di sini sebelum submit]**
+
+### Isi yang Ditunjukkan dalam Video
+
+| # | Bagian | Yang Didemonstrasikan |
+|---|--------|-----------------------|
+| 1 | Halaman Mock SLIK | Tampilan `/mock/slik-data` sebagai target scraping Playwright |
+| 2 | WebSocket Connect | Koneksi ke `ws-tester.html`, status "Terhubung" |
+| 3 | POST `/api/ideb/scrape` | Response HTTP 202 langsung (non-blocking) |
+| 4 | Real-time WebSocket | Event berurutan: `SCRAPING → VALIDATING → GENERATING_PDF → SAVING → SUCCESS` |
+| 5 | Download PDF | Buka file PDF SLIK hasil generate |
+| 6 | Error Boundary — Scraping | NIK tidak valid → `[FAILED] SCRAPING_FAILED` di WebSocket |
+| 7 | Error Boundary — PDF | `simulate-failure=true` → `[FAILED] PDF_GENERATION_FAILED` di WebSocket |
+| 8 | Tabel Flowable di DB | Query `act_hi_procinst` menunjukkan `end_activity_id_ = errorEndEvent` |
+| 9 | GET `/api/ideb/search` | Filter dinamis `nasabahName`, `statusKredit`, `startDate`, `endDate` |
 
 ---
-*Catatan: File-file gambar di atas juga sangat bagus disertakan di dalam file ZIP yang dikirimkan ke email recruiter/tech lead.*
+
+*Tools yang direkomendasikan untuk rekam video: **Loom** (gratis, langsung dapat link shareable)*
