@@ -1,0 +1,110 @@
+﻿[
+  {
+    "v": 1,
+    "name": "SLIK IDEB Service - API Collection",
+    "folders": [
+      {
+        "id": "folder-ideb",
+        "name": "IDEB Endpoints",
+        "requests": [
+          {
+            "id": "req-scrape",
+            "name": "POST - Generate SLIK Report (Scrape)",
+            "url": "http://localhost:8080/api/ideb/scrape",
+            "method": "POST",
+            "headers": [
+              { "key": "Content-Type", "value": "application/json", "active": true }
+            ],
+            "body": {
+              "contentType": "application/json",
+              "body": "{\n  \"nik\": \"3174012501900001\",\n  \"nasabahName\": \"Budi Santoso\"\n}"
+            },
+            "description": "Memulai proses generate SLIK report secara async via Flowable. Return 202 Accepted + requestId."
+          },
+          {
+            "id": "req-search",
+            "name": "GET - Search Laporan IDEB",
+            "url": "http://localhost:8080/api/ideb/search?nasabahName=Budi&statusKredit=LANCAR&startDate=2026-01-01&endDate=2026-12-31&page=0&size=10",
+            "method": "GET",
+            "headers": [],
+            "body": { "contentType": "application/json", "body": "" },
+            "description": "Pencarian laporan IDEB dengan filter dinamis QueryDSL. Semua parameter opsional."
+          },
+          {
+            "id": "req-download",
+            "name": "GET - Download PDF Report",
+            "url": "http://localhost:8080/api/ideb/report/1/download",
+            "method": "GET",
+            "headers": [],
+            "body": { "contentType": "application/json", "body": "" },
+            "description": "Download PDF laporan sebagai file attachment. Ganti {1} dengan ID laporan yang valid."
+          },
+          {
+            "id": "req-failures",
+            "name": "GET - List Log Kegagalan",
+            "url": "http://localhost:8080/api/ideb/failures",
+            "method": "GET",
+            "headers": [],
+            "body": { "contentType": "application/json", "body": "" },
+            "description": "Mendapatkan semua log kegagalan proses BPMN (dari tabel ideb_failure_logs)."
+          },
+          {
+            "id": "req-health",
+            "name": "GET - Health Check (Actuator)",
+            "url": "http://localhost:8080/actuator/health",
+            "method": "GET",
+            "headers": [],
+            "body": { "contentType": "application/json", "body": "" },
+            "description": "Cek health aplikasi termasuk status database dan Flowable."
+          },
+          {
+            "id": "req-scrape-macet",
+            "name": "POST - Generate (NIK Macet - Ahmad Fauzi)",
+            "url": "http://localhost:8080/api/ideb/scrape",
+            "method": "POST",
+            "headers": [
+              { "key": "Content-Type", "value": "application/json", "active": true }
+            ],
+            "body": {
+              "contentType": "application/json",
+              "body": "{\n  \"nik\": \"3578041204920003\",\n  \"nasabahName\": \"Ahmad Fauzi\"\n}"
+            },
+            "description": "Test dengan nasabah status MACET (Ahmad Fauzi)."
+          },
+          {
+            "id": "req-scrape-notfound",
+            "name": "POST - Generate (NIK Tidak Ada - Expect FAILED)",
+            "url": "http://localhost:8080/api/ideb/scrape",
+            "method": "POST",
+            "headers": [
+              { "key": "Content-Type", "value": "application/json", "active": true }
+            ],
+            "body": {
+              "contentType": "application/json",
+              "body": "{\n  \"nik\": \"9999999999999999\",\n  \"nasabahName\": null\n}"
+            },
+            "description": "Test skenario gagal: NIK tidak ditemukan di halaman mock -> SCRAPING_FAILED -> handleErrorDelegate."
+          },
+          {
+            "id": "req-search-macet",
+            "name": "GET - Search Status MACET",
+            "url": "http://localhost:8080/api/ideb/search?statusKredit=MACET&page=0&size=10",
+            "method": "GET",
+            "headers": [],
+            "body": { "contentType": "application/json", "body": "" },
+            "description": "Filter khusus status kredit MACET."
+          },
+          {
+            "id": "req-mock-page",
+            "name": "GET - Halaman Mock SLIK (Target Scraping)",
+            "url": "http://localhost:8080/mock/slik-data",
+            "method": "GET",
+            "headers": [],
+            "body": { "contentType": "application/json", "body": "" },
+            "description": "Tampilkan halaman HTML mock yang dijadikan target scraping Playwright."
+          }
+        ]
+      }
+    ]
+  }
+]
