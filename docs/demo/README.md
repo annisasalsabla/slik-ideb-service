@@ -20,6 +20,4 @@ seluruh alur pengujian secara end-to-end.
 | 7 | Tabel Flowable di DB | Query `act_hi_procinst` menunjukkan `end_activity_id_ = errorEndEvent` |
 | 8 | GET `/api/ideb/search` | Filter dinamis `nasabahName`, `statusKredit`, `startDate`, `endDate` |
 
----
 
-*Tools yang direkomendasikan untuk rekam video: **Loom** (gratis, langsung dapat link shareable)*
