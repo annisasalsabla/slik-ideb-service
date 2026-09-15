@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:flowable="http://flowable.org/bpmn"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI"
+             typeLanguage="http://www.w3.org/2001/XMLSchema"
+             expressionLanguage="http://www.w3.org/1999/XPath"
+             targetNamespace="http://skyworx.co.id/slik-ideb">
+
+  <process id="idebReportProcess" name="Proses Generate Laporan SLIK/IDEB" isExecutable="true">
+
+    <!-- ==================== HAPPY PATH ==================== -->
+
+    <!-- Start Event -->
+    <startEvent id="startEvent" name="Mulai Proses SLIK">
+      <documentation>Proses dimulai saat endpoint POST /api/ideb/scrape dipanggil.</documentation>
+    </startEvent>
+
+    <!-- Task 1: Scrape Data Eksternal -->
+    <serviceTask id="scrapeDataTask" name="Scrape Data Eksternal"
+                 flowable:delegateExpression="${scrapeDataDelegate}">
+      <documentation>Menggunakan Playwright untuk scraping data nasabah dari halaman mock SLIK.</documentation>
+    </serviceTask>
+
+    <!-- Boundary Error Event pada Scrape Task — menangkap SCRAPING_FAILED -->
+    <boundaryEvent id="scrapeErrorBoundary" attachedToRef="scrapeDataTask" cancelActivity="true">
+      <errorEventDefinition errorRef="scrapingFailedError"/>
+    </boundaryEvent>
+
+    <!-- Task 2: Validasi Data JSON -->
+    <serviceTask id="validateDataTask" name="Validasi Data JSON"
+                 flowable:delegateExpression="${validateDataDelegate}">
+      <documentation>Memvalidasi kelengkapan data hasil scraping sebelum generate PDF.</documentation>
+    </serviceTask>
+
+    <!-- Task 3: Generate PDF -->
+    <serviceTask id="generatePdfTask" name="Generate PDF"
+                 flowable:delegateExpression="${generatePdfDelegate}">
+      <documentation>Menggunakan Flying Saucer + Thymeleaf untuk membuat PDF laporan SLIK.</documentation>
+    </serviceTask>
+
+    <!-- Boundary Error Event pada PDF Task — menangkap PDF_GENERATION_FAILED -->
+    <boundaryEvent id="pdfErrorBoundary" attachedToRef="generatePdfTask" cancelActivity="true">
+      <errorEventDefinition errorRef="pdfFailedError"/>
+    </boundaryEvent>
+
+    <!-- Task 4: Simpan ke Database -->
+    <serviceTask id="saveToDbTask" name="Simpan ke Database"
+                 flowable:delegateExpression="${saveToDbDelegate}">
+      <documentation>Menyimpan data nasabah, JSON raw, byte[] PDF ke tabel ideb_reports.</documentation>
+    </serviceTask>
+
+    <!-- Task 5: Notifikasi Sukses -->
+    <serviceTask id="notifySuccessTask" name="Notifikasi Sukses"
+                 flowable:delegateExpression="${notifySuccessDelegate}">
+      <documentation>Mengirim WebSocket event SUCCESS ke client via /topic/ideb/{requestId}.</documentation>
+    </serviceTask>
+
+    <!-- End Event Sukses -->
+    <endEvent id="successEndEvent" name="Proses Selesai"/>
+
+    <!-- ==================== ERROR PATH ==================== -->
+
+    <!-- Task Error: Catat Log Kegagalan -->
+    <serviceTask id="handleErrorTask" name="Catat Log Kegagalan"
+                 flowable:delegateExpression="${handleErrorDelegate}">
+      <documentation>Mencatat detail kegagalan ke tabel ideb_failure_logs dan mengirim notifikasi FAILED via WebSocket.</documentation>
+    </serviceTask>
+
+    <!-- Error End Event -->
+    <endEvent id="errorEndEvent" name="Proses Gagal">
+      <errorEventDefinition errorRef="processFailedError"/>
+    </endEvent>
+
+    <!-- ==================== SEQUENCE FLOWS ==================== -->
+
+    <!-- Happy path flows -->
+    <sequenceFlow id="flow1" sourceRef="startEvent" targetRef="scrapeDataTask"/>
+    <sequenceFlow id="flow2" sourceRef="scrapeDataTask" targetRef="validateDataTask"/>
+    <sequenceFlow id="flow3" sourceRef="validateDataTask" targetRef="generatePdfTask"/>
+    <sequenceFlow id="flow4" sourceRef="generatePdfTask" targetRef="saveToDbTask"/>
+    <sequenceFlow id="flow5" sourceRef="saveToDbTask" targetRef="notifySuccessTask"/>
+    <sequenceFlow id="flow6" sourceRef="notifySuccessTask" targetRef="successEndEvent"/>
+
+    <!-- Error boundary flows: kedua error menuju handleErrorTask -->
+    <sequenceFlow id="errorFlow1" sourceRef="scrapeErrorBoundary" targetRef="handleErrorTask"/>
+    <sequenceFlow id="errorFlow2" sourceRef="pdfErrorBoundary" targetRef="handleErrorTask"/>
+    <sequenceFlow id="errorFlow3" sourceRef="handleErrorTask" targetRef="errorEndEvent"/>
+
+  </process>
+
+  <!-- Error definitions -->
+  <error id="scrapingFailedError" errorCode="SCRAPING_FAILED" name="Scraping Failed Error"/>
+  <error id="pdfFailedError" errorCode="PDF_GENERATION_FAILED" name="PDF Generation Failed Error"/>
+  <error id="processFailedError" errorCode="PROCESS_FAILED" name="Process Failed Error"/>
+
+</definitions>
