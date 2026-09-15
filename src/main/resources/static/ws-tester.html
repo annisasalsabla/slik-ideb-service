@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
@@ -192,6 +192,7 @@
 <script>
     let stompClient = null;
     let subscriptions = [];
+    let subscribedTopics = new Set();
 
     function connectWs() {
         const url = document.getElementById('wsUrl').value;
@@ -207,7 +208,9 @@
 
             // Auto-subscribe ke topic broadcast
             const topic = document.getElementById('subTopic').value;
-            subscribeToTopic(topic);
+            if (topic && topic.trim() !== '') {
+                subscribeToTopic(topic.trim());
+            }
 
         }, function(error) {
             setStatus('error', 'Gagal terhubung');
@@ -219,6 +222,7 @@
         if (stompClient) {
             subscriptions.forEach(s => s.unsubscribe());
             subscriptions = [];
+            subscribedTopics.clear();
             stompClient.disconnect(function() {
                 setStatus('disconnected', 'Terputus');
                 addLog('system', 'WebSocket diputus');
@@ -231,6 +235,11 @@
             addLog('error', 'Belum terhubung ke WebSocket!');
             return;
         }
+        if (subscribedTopics.has(topic)) {
+            addLog('system', 'Sudah subscribed ke topic: ' + topic);
+            return;
+        }
+        subscribedTopics.add(topic);
         const sub = stompClient.subscribe(topic, function(message) {
             const data = JSON.parse(message.body);
             handleNotification(data);

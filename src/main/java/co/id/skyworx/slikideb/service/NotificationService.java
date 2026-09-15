@@ -35,7 +35,6 @@ public class NotificationService {
                 .url("http://localhost:8080/api/ideb/report/" + reportId + "/download")
                 .build();
         sendToRequestTopic(requestId, notification);
-        sendBroadcast(notification);
         log.info("Sent success notification: requestId={}, reportId={}", requestId, reportId);
     }
 
@@ -47,7 +46,6 @@ public class NotificationService {
                 .message(message)
                 .build();
         sendToRequestTopic(requestId, notification);
-        sendBroadcast(notification);
         log.warn("Sent failure notification: requestId={}, errorCode={}", requestId, errorCode);
     }
 
