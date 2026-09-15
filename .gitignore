@@ -28,7 +28,11 @@ logs/
 Thumbs.db
 
 # Application output
-pdf-output/
+pdf-output/*.pdf
+!pdf-output/.gitkeep
+
+# Local utility scripts
+scripts/
 
 # Spring Boot
 spring-shell.log

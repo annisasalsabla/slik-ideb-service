@@ -1,13 +1,13 @@
-﻿server:
+server:
   port: 8080
 
 spring:
   application:
     name: slik-ideb-service
   datasource:
-    url: jdbc:postgresql://localhost:5432/slik_ideb_db
-    username: postgres
-    password: postgres
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/slik_ideb_db}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:postgres}
     driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size: 10
