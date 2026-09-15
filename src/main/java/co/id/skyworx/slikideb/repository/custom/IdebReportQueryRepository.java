@@ -1,8 +1,10 @@
 package co.id.skyworx.slikideb.repository.custom;
 
+import co.id.skyworx.slikideb.dto.response.IdebReportSummaryDto;
 import co.id.skyworx.slikideb.entity.IdebReport;
 import co.id.skyworx.slikideb.entity.QIdebReport;
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +29,7 @@ public class IdebReportQueryRepository {
     /**
      * Executes dynamic search using optional query predicates.
      */
-    public Page<IdebReport> searchReports(
+    public Page<IdebReportSummaryDto> searchReports(
             String nasabahName,
             String nik,
             String statusKredit,
@@ -54,8 +56,17 @@ public class IdebReportQueryRepository {
                 .fetchOne();
         long total = count != null ? count : 0L;
 
-        List<IdebReport> results = queryFactory
-                .selectFrom(report)
+        List<IdebReportSummaryDto> results = queryFactory
+                .select(Projections.constructor(
+                        IdebReportSummaryDto.class,
+                        report.id,
+                        report.requestId,
+                        report.nasabahName,
+                        report.statusKredit,
+                        report.nominalTagihan,
+                        report.createdAt
+                ))
+                .from(report)
                 .where(builder)
                 .orderBy(report.createdAt.desc())
                 .offset(pageable.getOffset())

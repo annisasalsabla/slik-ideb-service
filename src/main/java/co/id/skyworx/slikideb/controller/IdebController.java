@@ -4,6 +4,7 @@ import co.id.skyworx.slikideb.dto.request.IdebSearchRequest;
 import co.id.skyworx.slikideb.dto.request.ScrapeRequest;
 import co.id.skyworx.slikideb.dto.response.ApiResponse;
 import co.id.skyworx.slikideb.dto.response.IdebReportResponse;
+import co.id.skyworx.slikideb.dto.response.IdebReportSummaryDto;
 import co.id.skyworx.slikideb.dto.response.ScrapeAcceptedResponse;
 import co.id.skyworx.slikideb.entity.IdebFailureLog;
 import co.id.skyworx.slikideb.entity.IdebReport;
@@ -72,10 +73,10 @@ public class IdebController {
      * Searches IDEB reports with dynamic query filters.
      */
     @GetMapping("/search")
-    public ResponseEntity<ApiResponse<Page<IdebReportResponse>>> searchReports(
+    public ResponseEntity<ApiResponse<Page<IdebReportSummaryDto>>> searchReports(
             @ModelAttribute IdebSearchRequest request) {
 
-        Page<IdebReportResponse> result = searchService.searchReports(request);
+        Page<IdebReportSummaryDto> result = searchService.searchReports(request);
         return ResponseEntity.ok(ApiResponse.ok(result, "Found " + result.getTotalElements() + " reports"));
     }
 

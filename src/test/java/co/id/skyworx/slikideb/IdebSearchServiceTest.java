@@ -2,6 +2,7 @@ package co.id.skyworx.slikideb;
 
 import co.id.skyworx.slikideb.dto.request.IdebSearchRequest;
 import co.id.skyworx.slikideb.dto.response.IdebReportResponse;
+import co.id.skyworx.slikideb.dto.response.IdebReportSummaryDto;
 import co.id.skyworx.slikideb.entity.IdebReport;
 import co.id.skyworx.slikideb.repository.IdebReportRepository;
 import co.id.skyworx.slikideb.repository.custom.IdebReportQueryRepository;
@@ -41,22 +42,17 @@ class IdebSearchServiceTest {
     @DisplayName("Should return paged response with correctly mapped DTOs")
     void testSearchReports_ReturnsPagedResponse() {
         // Arrange
-        IdebReport mockReport = IdebReport.builder()
-                .id(1L)
-                .requestId("req-123")
-                .nik("3174012501900001")
-                .nasabahName("Budi Santoso")
-                .statusKredit("LANCAR")
-                .nominalTagihan(new BigDecimal("150000000"))
-                .namaBank("Bank Mandiri")
-                .kolektibilitas("1")
-                .status("SUCCESS")
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
-                .build();
+        IdebReportSummaryDto mockDto = new IdebReportSummaryDto(
+                1L,
+                "req-123",
+                "Budi Santoso",
+                "LANCAR",
+                new BigDecimal("150000000"),
+                LocalDateTime.now()
+        );
 
-        Page<IdebReport> mockPage = new PageImpl<>(
-                List.of(mockReport),
+        Page<IdebReportSummaryDto> mockPage = new PageImpl<>(
+                List.of(mockDto),
                 PageRequest.of(0, 10),
                 1L
         );
@@ -75,20 +71,21 @@ class IdebSearchServiceTest {
         request.setSortDir("desc");
 
         // Act
-        Page<IdebReportResponse> result = searchService.searchReports(request);
+        Page<IdebReportSummaryDto> result = searchService.searchReports(request);
 
         // Assert
         assertThat(result).isNotNull();
         assertThat(result.getTotalElements()).isEqualTo(1);
         assertThat(result.getContent()).hasSize(1);
 
-        IdebReportResponse response = result.getContent().get(0);
+        IdebReportSummaryDto response = result.getContent().get(0);
         assertThat(response.getId()).isEqualTo(1L);
-        assertThat(response.getNik()).isEqualTo("3174012501900001");
+        assertThat(response.getRequestId()).isEqualTo("req-123");
         assertThat(response.getNasabahName()).isEqualTo("Budi Santoso");
         assertThat(response.getStatusKredit()).isEqualTo("LANCAR");
-        // pdfContent TIDAK boleh ada di response
+        assertThat(response.getNominalTagihan()).isEqualByComparingTo(new BigDecimal("150000000"));
         assertThat(response.getDownloadUrl()).contains("/api/ideb/report/1/download");
+        assertThat(response.getUrl()).contains("/api/ideb/report/1/download");
 
         verify(queryRepository).searchReports(
                 eq("Budi"), eq("3174012501900001"), eq("LANCAR"),
@@ -98,7 +95,7 @@ class IdebSearchServiceTest {
     @Test
     @DisplayName("Should handle empty query filters without throwing exceptions")
     void testSearchReports_EmptyFilter_NoError() {
-        Page<IdebReport> emptyPage = new PageImpl<>(
+        Page<IdebReportSummaryDto> emptyPage = new PageImpl<>(
                 List.of(), PageRequest.of(0, 10), 0L);
 
         when(queryRepository.searchReports(isNull(), isNull(), isNull(),
@@ -107,7 +104,7 @@ class IdebSearchServiceTest {
 
         IdebSearchRequest request = new IdebSearchRequest();
 
-        Page<IdebReportResponse> result = searchService.searchReports(request);
+        Page<IdebReportSummaryDto> result = searchService.searchReports(request);
 
         assertThat(result).isNotNull();
         assertThat(result.getTotalElements()).isEqualTo(0);

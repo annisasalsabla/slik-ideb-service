@@ -2,6 +2,7 @@ package co.id.skyworx.slikideb.service;
 
 import co.id.skyworx.slikideb.dto.request.IdebSearchRequest;
 import co.id.skyworx.slikideb.dto.response.IdebReportResponse;
+import co.id.skyworx.slikideb.dto.response.IdebReportSummaryDto;
 import co.id.skyworx.slikideb.entity.IdebReport;
 import co.id.skyworx.slikideb.repository.IdebReportRepository;
 import co.id.skyworx.slikideb.repository.custom.IdebReportQueryRepository;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -27,7 +29,7 @@ public class IdebSearchService {
     private final IdebReportQueryRepository queryRepository;
     private final IdebReportRepository reportRepository;
 
-    public Page<IdebReportResponse> searchReports(IdebSearchRequest request) {
+    public Page<IdebReportSummaryDto> searchReports(IdebSearchRequest request) {
         log.debug("Searching reports: name={}, nik={}, status={}",
                 request.getNasabahName(), request.getNik(), request.getStatusKredit());
 
@@ -36,7 +38,7 @@ public class IdebSearchService {
                 : Sort.by(request.getSortBy()).descending();
         Pageable pageable = PageRequest.of(request.getPage(), request.getSize(), sort);
 
-        Page<IdebReport> page = queryRepository.searchReports(
+        return queryRepository.searchReports(
                 request.getNasabahName(),
                 request.getNik(),
                 request.getStatusKredit(),
@@ -44,10 +46,9 @@ public class IdebSearchService {
                 request.getEndDate(),
                 pageable
         );
-
-        return page.map(this::toResponse);
     }
 
+    @Transactional(readOnly = true)
     public IdebReport findById(Long id) {
         return reportRepository.findById(id)
                 .orElseThrow(() -> new ValidationException(
