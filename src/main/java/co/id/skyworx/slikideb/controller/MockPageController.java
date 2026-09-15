@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/mock")
 public class MockPageController {
 
-    @GetMapping("/slik-data")
+    @GetMapping({"/slik-data", "/slik-data.html"})
     public String mockSlikPage() {
         return "mock-slik-data";
     }
