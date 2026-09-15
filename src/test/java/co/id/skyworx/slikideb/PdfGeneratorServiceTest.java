@@ -88,4 +88,34 @@ class PdfGeneratorServiceTest {
 
         verify(templateEngine).process(eq("slik-report-template"), any(Context.class));
     }
+
+    @Test
+    @DisplayName("Should render actual template file from templates directory into valid PDF")
+    void testGeneratePdf_ActualTemplateRendering() {
+        co.id.skyworx.slikideb.config.PdfTemplateConfig config = new co.id.skyworx.slikideb.config.PdfTemplateConfig();
+        TemplateEngine actualEngine = config.pdfTemplateEngine();
+
+        PdfGeneratorService service = new PdfGeneratorService(actualEngine);
+        ReflectionTestUtils.setField(service, "pdfOutputDir", "D:/Projects/slik-ideb-service/pdf-output");
+        ReflectionTestUtils.setField(service, "simulateFailure", false);
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("nik", "3174012501900001");
+        data.put("nasabahName", "Budi Santoso");
+        data.put("statusKredit", "LANCAR");
+        data.put("nominalTagihan", "Rp 150.000.000,00");
+        data.put("namaBank", "PT Bank Mandiri (Persero) Tbk");
+        data.put("tanggalJatuhTempo", "15/12/2026");
+        data.put("kolektibilitas", "1 - Lancar");
+
+        Object[] result = service.generatePdf(data, "sample-preview-id");
+
+        assertThat(result).hasSize(2);
+        byte[] pdfBytes = (byte[]) result[0];
+        String filePath = (String) result[1];
+
+        assertThat(pdfBytes).isNotEmpty();
+        assertThat(pdfBytes.length).isGreaterThan(1000);
+        assertThat(new java.io.File(filePath)).exists();
+    }
 }

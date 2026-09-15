@@ -3,6 +3,7 @@ package co.id.skyworx.slikideb.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.spring6.SpringTemplateEngine;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
@@ -15,15 +16,15 @@ public class PdfTemplateConfig {
 
     @Bean(name = "pdfTemplateEngine")
     public TemplateEngine pdfTemplateEngine() {
-        TemplateEngine engine = new TemplateEngine();
+        SpringTemplateEngine engine = new SpringTemplateEngine();
         engine.addTemplateResolver(pdfTemplateResolver());
         return engine;
     }
 
     private ClassLoaderTemplateResolver pdfTemplateResolver() {
         ClassLoaderTemplateResolver resolver = new ClassLoaderTemplateResolver();
-        // Lokasi template PDF di classpath (resources/pdf-templates/)
-        resolver.setPrefix("pdf-templates/");
+        // Dedicated PDF template location in classpath (resources/templates/)
+        resolver.setPrefix("templates/");
         resolver.setSuffix(".html");
         // Mode XML memastikan output XHTML-valid untuk Flying Saucer
         resolver.setTemplateMode(TemplateMode.XML);
