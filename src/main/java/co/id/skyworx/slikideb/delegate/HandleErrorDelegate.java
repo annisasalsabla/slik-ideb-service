@@ -7,8 +7,8 @@ import co.id.skyworx.slikideb.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.flowable.engine.delegate.DelegateExecution;
-import org.flowable.engine.delegate.JavaDelegate;
-import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * BPMN Service Task delegate for handling and persisting workflow execution failures.
@@ -22,21 +22,27 @@ public class HandleErrorDelegate implements JavaDelegate {
     private final IdebReportRepository reportRepository;
     private final NotificationService notificationService;
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Override
     public void execute(DelegateExecution execution) {
         String requestId = (String) execution.getVariable("requestId");
         String errorMessage = getVariableString(execution, "errorMessage", "Unknown error");
         String failedTask = getVariableString(execution, "failedTask", "Unknown task");
-        String errorCode = getVariableString(execution, "errorCode", "UNKNOWN_ERROR");
+        String errorCode = getVariableString(execution, "errorCode", null);
 
-        try {
-            String eventName = execution.getCurrentActivityId();
-            if (eventName != null && eventName.contains("SCRAPING")) {
+        // Resolve errorCode if missing, blank, or UNKNOWN_ERROR
+        if (errorCode == null || errorCode.isBlank() || "UNKNOWN_ERROR".equalsIgnoreCase(errorCode)) {
+            if (failedTask.toLowerCase().contains("scrape")
+                    || errorMessage.toLowerCase().contains("debtor data not found")
+                    || errorMessage.toLowerCase().contains("scraping")) {
                 errorCode = "SCRAPING_FAILED";
-            } else if (eventName != null && eventName.contains("PDF")) {
+            } else if (failedTask.toLowerCase().contains("pdf")
+                    || errorMessage.toLowerCase().contains("pdf")) {
                 errorCode = "PDF_GENERATION_FAILED";
+            } else {
+                errorCode = "UNKNOWN_ERROR";
             }
-        } catch (Exception ignored) {}
+        }
 
         log.error("[BPMN] Handling process failure: requestId={}, errorCode={}, task={}",
                 requestId, errorCode, failedTask);

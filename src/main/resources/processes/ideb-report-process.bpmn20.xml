@@ -26,7 +26,7 @@
 
     <!-- Boundary Error Event pada Scrape Task — menangkap SCRAPING_FAILED -->
     <boundaryEvent id="scrapeErrorBoundary" attachedToRef="scrapeDataTask" cancelActivity="true">
-      <errorEventDefinition errorRef="scrapingFailedError"/>
+      <errorEventDefinition errorRef="scrapingFailedError" flowable:errorCodeVariable="errorCode" flowable:errorMessageVariable="errorMessage"/>
     </boundaryEvent>
 
     <!-- Task 2: Validasi Data JSON -->
@@ -43,7 +43,7 @@
 
     <!-- Boundary Error Event pada PDF Task — menangkap PDF_GENERATION_FAILED -->
     <boundaryEvent id="pdfErrorBoundary" attachedToRef="generatePdfTask" cancelActivity="true">
-      <errorEventDefinition errorRef="pdfFailedError"/>
+      <errorEventDefinition errorRef="pdfFailedError" flowable:errorCodeVariable="errorCode" flowable:errorMessageVariable="errorMessage"/>
     </boundaryEvent>
 
     <!-- Task 4: Simpan ke Database -->
@@ -70,9 +70,7 @@
     </serviceTask>
 
     <!-- Error End Event -->
-    <endEvent id="errorEndEvent" name="Proses Gagal">
-      <errorEventDefinition errorRef="processFailedError"/>
-    </endEvent>
+    <endEvent id="errorEndEvent" name="Proses Gagal"/>
 
     <!-- ==================== SEQUENCE FLOWS ==================== -->
 
@@ -94,6 +92,5 @@
   <!-- Error definitions -->
   <error id="scrapingFailedError" errorCode="SCRAPING_FAILED" name="Scraping Failed Error"/>
   <error id="pdfFailedError" errorCode="PDF_GENERATION_FAILED" name="PDF Generation Failed Error"/>
-  <error id="processFailedError" errorCode="PROCESS_FAILED" name="Process Failed Error"/>
 
 </definitions>

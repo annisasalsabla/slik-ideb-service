@@ -48,6 +48,7 @@ public class GeneratePdfDelegate implements JavaDelegate {
 
         } catch (PdfGenerationException e) {
             log.error("[BPMN] PDF generation failed: requestId={}, error={}", requestId, e.getMessage());
+            execution.setVariable("errorCode", "PDF_GENERATION_FAILED");
             execution.setVariable("errorMessage", e.getMessage());
             execution.setVariable("failedTask", "Generate PDF");
             // Triggers BPMN boundary error event to route to HandleErrorDelegate
@@ -55,6 +56,7 @@ public class GeneratePdfDelegate implements JavaDelegate {
 
         } catch (Exception e) {
             log.error("[BPMN] Unexpected PDF generation error: requestId={}", requestId, e);
+            execution.setVariable("errorCode", "PDF_GENERATION_FAILED");
             execution.setVariable("errorMessage", "Unexpected PDF error: " + e.getMessage());
             execution.setVariable("failedTask", "Generate PDF");
             throw new BpmnError("PDF_GENERATION_FAILED", "Unexpected PDF generation error");

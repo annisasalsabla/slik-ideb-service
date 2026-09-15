@@ -65,7 +65,14 @@ public class ScrapingService {
                     }
                 }
 
-                String searchInfo = nik != null ? "NIK=" + nik : "Name=" + nasabahName;
+                String searchInfo;
+                if (nik != null && !nik.isBlank() && nasabahName != null && !nasabahName.isBlank()) {
+                    searchInfo = "NIK=" + nik + ", Name=" + nasabahName;
+                } else if (nik != null && !nik.isBlank()) {
+                    searchInfo = "NIK=" + nik;
+                } else {
+                    searchInfo = "Name=" + nasabahName;
+                }
                 throw new ScrapingException("Debtor data not found for " + searchInfo);
 
             } finally {

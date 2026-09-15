@@ -46,6 +46,7 @@ public class ScrapeDataDelegate implements JavaDelegate {
 
         } catch (ScrapingException e) {
             log.error("[BPMN] Scraping failed: requestId={}, error={}", requestId, e.getMessage());
+            execution.setVariable("errorCode", "SCRAPING_FAILED");
             execution.setVariable("errorMessage", e.getMessage());
             execution.setVariable("failedTask", "Scrape Data Eksternal");
             // Triggers BPMN boundary error event to route to HandleErrorDelegate
@@ -53,6 +54,7 @@ public class ScrapeDataDelegate implements JavaDelegate {
 
         } catch (Exception e) {
             log.error("[BPMN] Unexpected error during scraping: requestId={}", requestId, e);
+            execution.setVariable("errorCode", "SCRAPING_FAILED");
             execution.setVariable("errorMessage", "Unexpected error: " + e.getMessage());
             execution.setVariable("failedTask", "Scrape Data Eksternal");
             throw new BpmnError("SCRAPING_FAILED", "Unexpected scraping error: " + e.getMessage());
