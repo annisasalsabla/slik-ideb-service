@@ -1,7 +1,6 @@
 package co.id.skyworx.slikideb.repository;
 
 import co.id.skyworx.slikideb.entity.IdebReport;
-import com.querydsl.core.types.Predicate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

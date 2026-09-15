@@ -1,7 +1,6 @@
 package co.id.skyworx.slikideb.delegate;
 
 import co.id.skyworx.slikideb.entity.IdebFailureLog;
-import co.id.skyworx.slikideb.entity.IdebReport;
 import co.id.skyworx.slikideb.repository.IdebFailureLogRepository;
 import co.id.skyworx.slikideb.repository.IdebReportRepository;
 import co.id.skyworx.slikideb.service.NotificationService;

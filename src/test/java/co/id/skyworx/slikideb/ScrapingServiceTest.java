@@ -2,7 +2,6 @@ package co.id.skyworx.slikideb;
 
 import co.id.skyworx.slikideb.exception.ScrapingException;
 import co.id.skyworx.slikideb.service.ScrapingService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.BrowserContext;
 import com.microsoft.playwright.ElementHandle;
@@ -16,7 +15,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -62,7 +60,6 @@ class ScrapingServiceTest {
         ReflectionTestUtils.setField(scrapingService, "targetUrl",
                 "http://localhost:8080/mock/slik-data");
         ReflectionTestUtils.setField(scrapingService, "timeoutMs", 5000);
-        ReflectionTestUtils.setField(scrapingService, "objectMapper", new ObjectMapper());
     }
 
     @Test

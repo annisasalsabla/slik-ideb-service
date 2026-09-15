@@ -2,7 +2,9 @@ package co.id.skyworx.slikideb.controller;
 
 import co.id.skyworx.slikideb.dto.request.IdebSearchRequest;
 import co.id.skyworx.slikideb.dto.request.ScrapeRequest;
-import co.id.skyworx.slikideb.dto.response.*;
+import co.id.skyworx.slikideb.dto.response.ApiResponse;
+import co.id.skyworx.slikideb.dto.response.IdebReportResponse;
+import co.id.skyworx.slikideb.dto.response.ScrapeAcceptedResponse;
 import co.id.skyworx.slikideb.entity.IdebFailureLog;
 import co.id.skyworx.slikideb.entity.IdebReport;
 import co.id.skyworx.slikideb.repository.IdebFailureLogRepository;
@@ -17,7 +19,13 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.UUID;

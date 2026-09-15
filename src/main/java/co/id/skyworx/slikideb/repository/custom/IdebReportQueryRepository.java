@@ -12,7 +12,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -39,7 +38,8 @@ public class IdebReportQueryRepository {
         QIdebReport report = QIdebReport.idebReport;
         BooleanBuilder builder = new BooleanBuilder();
 
-        // BooleanBuilder safely ignores null predicates, allowing modular predicate composition
+        // BooleanBuilder safely ignores null predicates, allowing modular predicate
+        // composition
         builder.and(buildNasabahNamePredicate(report, nasabahName));
         builder.and(buildNikPredicate(report, nik));
         builder.and(buildStatusKreditPredicate(report, statusKredit));
@@ -47,10 +47,12 @@ public class IdebReportQueryRepository {
 
         log.debug("QueryDSL predicate: {}", builder.getValue());
 
-        long total = queryFactory
-                .selectFrom(report)
+        Long count = queryFactory
+                .select(report.count())
+                .from(report)
                 .where(builder)
-                .fetchCount();
+                .fetchOne();
+        long total = count != null ? count : 0L;
 
         List<IdebReport> results = queryFactory
                 .selectFrom(report)
@@ -65,19 +67,22 @@ public class IdebReportQueryRepository {
 
     private com.querydsl.core.types.Predicate buildNasabahNamePredicate(
             QIdebReport report, String nasabahName) {
-        if (nasabahName == null || nasabahName.isBlank()) return null;
+        if (nasabahName == null || nasabahName.isBlank())
+            return null;
         return report.nasabahName.containsIgnoreCase(nasabahName);
     }
 
     private com.querydsl.core.types.Predicate buildNikPredicate(
             QIdebReport report, String nik) {
-        if (nik == null || nik.isBlank()) return null;
+        if (nik == null || nik.isBlank())
+            return null;
         return report.nik.eq(nik);
     }
 
     private com.querydsl.core.types.Predicate buildStatusKreditPredicate(
             QIdebReport report, String statusKredit) {
-        if (statusKredit == null || statusKredit.isBlank()) return null;
+        if (statusKredit == null || statusKredit.isBlank())
+            return null;
         return report.statusKredit.eq(statusKredit);
     }
 

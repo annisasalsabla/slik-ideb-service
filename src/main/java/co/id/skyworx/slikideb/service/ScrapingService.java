@@ -1,14 +1,18 @@
 package co.id.skyworx.slikideb.service;
 
 import co.id.skyworx.slikideb.exception.ScrapingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.microsoft.playwright.*;
+import com.microsoft.playwright.Browser;
+import com.microsoft.playwright.BrowserContext;
+import com.microsoft.playwright.ElementHandle;
+import com.microsoft.playwright.Page;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Service for web scraping debtor data using Playwright.
@@ -19,7 +23,6 @@ import java.util.*;
 public class ScrapingService {
 
     private final Browser browser;
-    private final ObjectMapper objectMapper;
 
     @Value("${app.scraping.target-url}")
     private String targetUrl;

@@ -5,9 +5,13 @@ import co.id.skyworx.slikideb.dto.response.IdebReportResponse;
 import co.id.skyworx.slikideb.entity.IdebReport;
 import co.id.skyworx.slikideb.repository.IdebReportRepository;
 import co.id.skyworx.slikideb.repository.custom.IdebReportQueryRepository;
+import co.id.skyworx.slikideb.exception.ValidationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -46,7 +50,7 @@ public class IdebSearchService {
 
     public IdebReport findById(Long id) {
         return reportRepository.findById(id)
-                .orElseThrow(() -> new co.id.skyworx.slikideb.exception.ValidationException(
+                .orElseThrow(() -> new ValidationException(
                         "Report not found with ID: " + id));
     }
 
