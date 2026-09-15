@@ -108,7 +108,7 @@ class PdfGeneratorServiceTest {
         data.put("tanggalJatuhTempo", "15/12/2026");
         data.put("kolektibilitas", "1 - Lancar");
 
-        Object[] result = service.generatePdf(data, "sample-preview-id");
+        Object[] result = service.generatePdf(data, "80e62f4d-b3b3-4454-a3d3-7312a6b0c0f4");
 
         assertThat(result).hasSize(2);
         byte[] pdfBytes = (byte[]) result[0];

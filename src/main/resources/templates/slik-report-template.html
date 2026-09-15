@@ -48,13 +48,39 @@
             border-collapse: collapse;
         }
         .meta-table td {
-            padding: 3px 8px;
+            padding: 3px 4px;
             font-size: 10pt;
+            vertical-align: top;
         }
         .meta-label {
             font-weight: bold;
-            width: 30%;
             color: #003087;
+            white-space: nowrap;
+            padding-right: 2px;
+        }
+        .meta-colon {
+            width: 1%;
+            white-space: nowrap;
+            padding: 3px 2px 3px 0;
+            color: #222222;
+        }
+        .meta-col-label-1 {
+            width: 20%;
+        }
+        .meta-col-val-1 {
+            width: 28%;
+            padding-right: 10px;
+        }
+        .meta-col-label-2 {
+            width: 15%;
+        }
+        .meta-col-val-2 {
+            width: 35%;
+        }
+        .meta-date,
+        .nowrap,
+        .detail-table td.nowrap {
+            white-space: nowrap;
         }
         .section-title {
             background-color: #003087;
@@ -160,22 +186,28 @@
 <div class="meta-info">
     <table class="meta-table">
         <tr>
-            <td class="meta-label">Tanggal Generate</td>
-            <td>: <span th:text="${generatedAt}">01/01/2026 10:00:00</span></td>
-            <td class="meta-label">Request ID</td>
-            <td>: <span th:text="${requestId}">xxxx-xxxx</span></td>
+            <td class="meta-label meta-col-label-1">Tanggal Generate</td>
+            <td class="meta-colon">:</td>
+            <td class="meta-col-val-1 meta-date nowrap"><span th:text="${generatedAt}">01/01/2026 10:00:00</span></td>
+            <td class="meta-label meta-col-label-2">Request ID</td>
+            <td class="meta-colon">:</td>
+            <td class="meta-col-val-2"><span th:text="${requestId}">xxxx-xxxx</span></td>
         </tr>
         <tr>
-            <td class="meta-label">Nama Debitur</td>
-            <td>: <span th:text="${nasabahName}">-</span></td>
-            <td class="meta-label">NIK</td>
-            <td>: <span th:text="${nik}">-</span></td>
+            <td class="meta-label meta-col-label-1">Nama Debitur</td>
+            <td class="meta-colon">:</td>
+            <td class="meta-col-val-1"><span th:text="${nasabahName}">-</span></td>
+            <td class="meta-label meta-col-label-2">NIK</td>
+            <td class="meta-colon">:</td>
+            <td class="meta-col-val-2"><span th:text="${nik}">-</span></td>
         </tr>
         <tr>
-            <td class="meta-label">Tanggal Jatuh Tempo</td>
-            <td>: <span th:text="${tanggalJatuhTempo}">-</span></td>
-            <td class="meta-label">Kolektibilitas</td>
-            <td>: <span th:text="${kolektibilitas}">-</span></td>
+            <td class="meta-label meta-col-label-1">Tanggal Jatuh Tempo</td>
+            <td class="meta-colon">:</td>
+            <td class="meta-col-val-1 meta-date nowrap"><span th:text="${tanggalJatuhTempo}">-</span></td>
+            <td class="meta-label meta-col-label-2">Kolektibilitas</td>
+            <td class="meta-colon">:</td>
+            <td class="meta-col-val-2"><span th:text="${kolektibilitas}">-</span></td>
         </tr>
     </table>
 </div>
@@ -211,7 +243,7 @@
         </tr>
         <tr>
             <td>Tanggal Jatuh Tempo</td>
-            <td th:text="${tanggalJatuhTempo}">-</td>
+            <td th:text="${tanggalJatuhTempo}" class="nowrap">-</td>
         </tr>
     </tbody>
 </table>
