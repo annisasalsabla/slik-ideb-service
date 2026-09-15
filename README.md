@@ -100,6 +100,8 @@ curl -X POST http://localhost:8080/api/ideb/scrape \
 
 Detail arsitektur lebih lanjut dapat dilihat di [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
-## Testing
+## Testing & Video Demo
 
-Panduan skenario pengujian, collection Hoppscotch, dan verifikasi TablePlus tersedia di [docs/TESTING.md](docs/TESTING.md).
+- Panduan skenario pengujian, collection Hoppscotch, dan verifikasi SQL tersedia di [docs/TESTING.md](file:///d:/Projects/slik-ideb-service/docs/TESTING.md).
+- Panduan rekaman dan checklist **Video Demo** pengujian aplikasi tersedia di [docs/screenshots/README.md](file:///d:/Projects/slik-ideb-service/docs/screenshots/README.md).
+
