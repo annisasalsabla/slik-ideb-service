@@ -53,6 +53,44 @@ Microservice untuk otomatisasi proses verifikasi data nasabah dan pembuatan lapo
              [Notif WebSocket FAILED] -> [Error End]
 ```
 
+## Verifikasi BPMN Error Boundary
+
+Proyek ini menyediakan mekanisme simulasi kegagalan **tanpa mengubah kode**, cukup satu flag di konfigurasi.
+
+### Simulasi Kegagalan PDF (`PDF_GENERATION_FAILED`)
+1. Set `app.pdf.simulate-failure: true` di `application.yml`
+2. Restart aplikasi
+3. Kirim `POST /api/ideb/scrape` dengan NIK valid (misal: `3174012501900001`)
+4. **Expected:** WebSocket menerima `[FAILED] PDF_GENERATION_FAILED`, record tersimpan di `ideb_failure_logs`, dan Flowable mengakhiri proses di `errorEndEvent`
+
+```bash
+# Kirim request via curl
+curl -X POST http://localhost:8080/api/ideb/scrape \
+  -H "Content-Type: application/json" \
+  -d '{"nik": "3174012501900001"}'
+
+# Cek log kegagalan yang tersimpan di DB
+curl http://localhost:8080/api/ideb/failures
+
+# Verifikasi routing BPMN di database Flowable
+# SELECT act_id_, act_name_ FROM act_hi_actinst WHERE proc_inst_id_ = '<id>'
+# Expected sequence: generatePdfTask → pdfErrorBoundary → handleErrorTask → errorEndEvent
+```
+
+### Simulasi Kegagalan Scraping (`SCRAPING_FAILED`)
+Gunakan NIK yang tidak ada di data mock (tanpa perubahan config apapun):
+```bash
+curl -X POST http://localhost:8080/api/ideb/scrape \
+  -H "Content-Type: application/json" \
+  -d '{"nik": "9999999999999999"}'
+# Expected: WebSocket [FAILED] SCRAPING_FAILED
+# Expected sequence BPMN: scrapeDataTask → scrapeErrorBoundary → handleErrorTask → errorEndEvent
+```
+
+> Panduan verifikasi lengkap beserta query SQL dan expected output ada di [docs/TESTING.md](docs/TESTING.md) — Skenario 3 dan 3b.
+
+---
+
 ## Catatan Teknis
 
 - **In-Memory PDF Buffer**: Rendering PDF menggunakan `ByteArrayOutputStream` untuk menjamin atomisitas (mencegah file korup jika render gagal di tengah) serta memungkinkan penulisan ganda ke database (`bytea`) dan disk secara efisien.

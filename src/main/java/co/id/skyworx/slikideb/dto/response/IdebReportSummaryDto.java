@@ -26,7 +26,6 @@ public class IdebReportSummaryDto {
     private BigDecimal nominalTagihan;
     private LocalDateTime createdAt;
     private String downloadUrl;
-    private String url;
 
     /**
      * Constructor for QueryDSL Projections.constructor.
@@ -40,10 +39,8 @@ public class IdebReportSummaryDto {
         this.statusKredit = statusKredit;
         this.nominalTagihan = nominalTagihan;
         this.createdAt = createdAt;
-        String link = id != null
+        this.downloadUrl = id != null
                 ? "http://localhost:8080/api/ideb/report/" + id + "/download"
                 : null;
-        this.downloadUrl = link;
-        this.url = link;
     }
 }

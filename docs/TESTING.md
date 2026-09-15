@@ -1,4 +1,4 @@
-﻿# TESTING GUIDE - SLIK IDEB Service
+# TESTING GUIDE - SLIK IDEB Service
 
 ## Prasyarat
 
@@ -115,36 +115,266 @@ FROM act_hi_procinst ORDER BY start_time_ DESC LIMIT 5;
 
 ---
 
-## Skenario 3: Gagal Generate PDF (Simulate Error Boundary)
+## Skenario 3: Verifikasi BPMN Error Boundary — PDF Generation Failed
 
-### Setup - Aktifkan Simulasi Kegagalan
-Di `application.yml`:
+> **Tujuan:** Membuktikan bahwa `BoundaryErrorEvent` pada task `generatePdfTask` di BPMN
+> benar-benar meng-intercept exception, mengalihkan alur ke `handleErrorTask`,
+> mencatat log kegagalan di database, dan mengirimkan notifikasi `FAILED` via WebSocket.
+> Pengujian ini tidak memerlukan perubahan kode — cukup satu flag konfigurasi.
+
+---
+
+### Step 1: Aktifkan Mode Simulasi Kegagalan
+
+Buka `src/main/resources/application.yml` dan ubah:
+
 ```yaml
 app:
   pdf:
-    simulate-failure: true
+    simulate-failure: true   # <-- ubah dari false ke true
 ```
-Restart aplikasi.
 
-### Request
+Lalu **restart aplikasi**:
+```bash
+mvn spring-boot:run
 ```
-POST http://localhost:8080/api/ideb/scrape
 
+Konfirmasi aplikasi siap:
+```
+GET http://localhost:8080/actuator/health
+```
+Expected: `{"status": "UP"}`
+
+---
+
+### Step 2: Hubungkan WebSocket Tester
+
+Buka browser ke `http://localhost:8080/ws-tester.html` dan klik **Hubungkan**.
+Panel log menampilkan:
+```
+Berhasil terhubung ke WebSocket
+```
+
+---
+
+### Step 3: Kirim Request ke `POST /api/ideb/scrape`
+
+```bash
+curl -X POST http://localhost:8080/api/ideb/scrape \
+  -H "Content-Type: application/json" \
+  -d '{"nik": "3174012501900001", "nasabahName": "Budi Santoso"}'
+```
+
+**Expected HTTP Response — 202 Accepted:**
+```json
 {
-  "nik": "3174012501900001"
+  "success": true,
+  "status": 202,
+  "message": "Request diterima, proses berjalan di background",
+  "data": {
+    "status": "ACCEPTED",
+    "requestId": "<uuid>",
+    "websocketTopic": "/topic/ideb/<uuid>"
+  }
 }
 ```
 
-### Expected Flow
-1. `ScrapeDataDelegate` berhasil → data disimpan ke process variable
-2. `ValidateDataDelegate` berhasil
-3. `GeneratePdfDelegate` melempar `PdfGenerationException` → `BpmnError("PDF_GENERATION_FAILED")`
-4. Boundary Error Event PDF terpicu
-5. `HandleErrorDelegate` mencatat di `ideb_failure_logs` dengan `error_code = 'PDF_GENERATION_FAILED'`
-6. WebSocket: `[FAILED] errorCode: PDF_GENERATION_FAILED`
+> Bukti non-blocking: server langsung merespons `202` tanpa menunggu proses selesai.
 
-### Reset Setelah Testing
-Set `app.pdf.simulate-failure: false` dan restart aplikasi.
+---
+
+### Step 4: Amati Urutan Event di WebSocket Tester
+
+Karena scraping & validasi akan berhasil, tetapi PDF akan gagal, urutan event yang terlihat:
+
+```
+[PROCESSING]  step: SCRAPING         ← ScrapeDataDelegate berjalan
+[PROCESSING]  step: VALIDATING       ← ValidateDataDelegate berjalan
+[PROCESSING]  step: GENERATING_PDF   ← GeneratePdfDelegate mulai berjalan
+[FAILED]      errorCode: PDF_GENERATION_FAILED
+                 message: Process failed: Simulated PDF failure for BPMN Error Boundary testing
+```
+
+> Bukti error boundary: proses **tidak berhenti tiba-tiba** (no 500 error ke client),
+> melainkan mengalir teratur ke `handleErrorTask` dan mengirim event `FAILED`.
+
+---
+
+### Step 5: Verifikasi Log Aplikasi (Console/Terminal)
+
+Pada log Spring Boot, pastikan rangkaian log berikut muncul secara berurutan:
+
+```log
+[BPMN] Executing scrape task: requestId=<uuid>
+[BPMN] Scrape task completed: requestId=<uuid>
+[BPMN] Executing validate task: requestId=<uuid>
+[BPMN] Validation passed: requestId=<uuid>
+[BPMN] Executing generate PDF task: requestId=<uuid>
+WARN  - Simulated PDF failure triggered (app.pdf.simulate-failure=true)
+[BPMN] PDF generation failed: requestId=<uuid>, error=Simulated PDF failure...
+[BPMN] Handling process failure: requestId=<uuid>, errorCode=PDF_GENERATION_FAILED, task=Generate PDF
+[BPMN] Failure log persisted for requestId=<uuid>
+WARN  - Sent failure notification: requestId=<uuid>, errorCode=PDF_GENERATION_FAILED
+```
+
+> Bukti alur BPMN: log menunjukkan task `Generate PDF` gagal, lalu `Handling process failure`
+> langsung dipanggil — membuktikan Error Boundary Event mengalihkan eksekusi ke `handleErrorTask`.
+
+---
+
+### Step 6: Verifikasi Database (TablePlus / psql)
+
+#### 6a. Cek tabel `ideb_failure_logs` — harus ada record baru:
+```sql
+SELECT
+    id,
+    request_id,
+    error_code,
+    error_message,
+    failed_task,
+    created_at
+FROM ideb_failure_logs
+ORDER BY created_at DESC
+LIMIT 5;
+```
+
+**Expected result:**
+```
+ id | request_id | error_code            | failed_task  | error_message
+----+------------+-----------------------+--------------+------------------------------------------
+  1 | <uuid>     | PDF_GENERATION_FAILED | Generate PDF | Simulated PDF failure for BPMN Error...
+```
+
+#### 6b. Cek Flowable history — proses berakhir di `errorEndEvent`:
+```sql
+SELECT
+    proc_inst_id_,
+    proc_def_key_,
+    start_time_,
+    end_time_,
+    end_activity_id_,
+    delete_reason_
+FROM act_hi_procinst
+ORDER BY start_time_ DESC
+LIMIT 5;
+```
+
+**Expected result:**
+```
+ proc_def_key_      | end_activity_id_
+-------------------+-----------------
+ idebReportProcess | errorEndEvent    ← BPMN routing ke Error End Event
+```
+
+#### 6c. Cek activity history — urutan task yang dieksekusi:
+```sql
+SELECT
+    act_id_,
+    act_name_,
+    act_type_,
+    start_time_,
+    end_time_
+FROM act_hi_actinst
+WHERE proc_inst_id_ = '<ganti-dengan-proc_inst_id_-dari-query-di-atas>'
+ORDER BY start_time_ ASC;
+```
+
+**Expected result** (urutan tasks yang dieksekusi di BPMN):
+```
+ act_id_             | act_name_                  | act_type_
+---------------------+----------------------------+-----------------
+ startEvent          | Mulai Proses SLIK          | startEvent
+ scrapeDataTask      | Scrape Data Eksternal      | serviceTask
+ validateDataTask    | Validasi Data JSON         | serviceTask
+ generatePdfTask     | Generate PDF               | serviceTask      ← gagal di sini
+ pdfErrorBoundary    | (boundary event)           | boundaryEvent    ← boundary terpicu
+ handleErrorTask     | Catat Log Kegagalan        | serviceTask      ← dialihkan ke sini
+ errorEndEvent       | Proses Gagal               | endEvent
+```
+
+> Bukti alur BPMN: query ini membuktikan secara visual bahwa `pdfErrorBoundary` terpicu
+> dan proses mengalir ke `handleErrorTask` bukan ke `saveToDbTask`.
+
+#### 6d. Cek endpoint `/api/ideb/failures`:
+```bash
+curl http://localhost:8080/api/ideb/failures
+```
+
+**Expected:**
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "requestId": "<uuid>",
+      "errorCode": "PDF_GENERATION_FAILED",
+      "errorMessage": "Simulated PDF failure for BPMN Error Boundary testing",
+      "failedTask": "Generate PDF",
+      "createdAt": "..."
+    }
+  ]
+}
+```
+
+---
+
+### Step 7: Reset Setelah Testing
+
+Kembalikan `application.yml` ke kondisi normal:
+```yaml
+app:
+  pdf:
+    simulate-failure: false   # <-- kembalikan ke false
+```
+Restart aplikasi.
+
+---
+
+## Skenario 3b: Verifikasi BPMN Error Boundary — Scraping Failed
+
+> **Tujuan:** Membuktikan bahwa `BoundaryErrorEvent` pada task `scrapeDataTask` bekerja
+> ketika NIK/nama tidak ditemukan di halaman mock SLIK (tidak perlu perubahan config).
+
+### Step 1: Pastikan `simulate-failure: false` (kondisi normal)
+
+### Step 2: Kirim request dengan NIK yang tidak ada di data mock:
+```bash
+curl -X POST http://localhost:8080/api/ideb/scrape \
+  -H "Content-Type: application/json" \
+  -d '{"nik": "9999999999999999"}'
+```
+
+### Step 3: Amati event di WebSocket Tester:
+```
+[PROCESSING]  step: SCRAPING
+[FAILED]      errorCode: SCRAPING_FAILED
+                 message: Process failed: Debtor data not found for NIK=9999999999999999
+```
+
+### Step 4: Verifikasi database:
+```sql
+-- Cek failure log tersimpan
+SELECT error_code, error_message, failed_task
+FROM ideb_failure_logs
+ORDER BY created_at DESC LIMIT 1;
+```
+
+**Expected:**
+```
+ error_code      | failed_task             | error_message
+-----------------+-------------------------+-----------------------------------------------
+ SCRAPING_FAILED | Scrape Data Eksternal   | Debtor data not found for NIK=9999...
+```
+
+```sql
+-- Cek Flowable routing ke scrapeErrorBoundary
+SELECT act_id_, act_name_
+FROM act_hi_actinst
+WHERE proc_inst_id_ = '<proc_inst_id>'
+ORDER BY start_time_ ASC;
+```
+
+**Expected:** Sequence `startEvent → scrapeDataTask → scrapeErrorBoundary → handleErrorTask → errorEndEvent`
 
 ---
 
@@ -204,17 +434,34 @@ http://localhost:8080/ws-tester.html
 
 ---
 
-## Validasi Cepat - Checklist
+## Validasi Cepat — Checklist Evaluator
 
+### Fitur Inti
 ```
-[ ] Aplikasi start tanpa error, log menunjukkan "idebReportProcess" terdeploy
-[ ] GET /actuator/health mengembalikan status UP dengan database
-[ ] GET /mock/slik-data menampilkan halaman tabel SLIK
-[ ] POST /api/ideb/scrape mengembalikan 202 Accepted dengan requestId
-[ ] WebSocket tester menerima notifikasi PROCESSING -> SUCCESS
-[ ] File PDF tersimpan di D:\Projects\slik-ideb-service\pdf-output\
-[ ] GET /api/ideb/report/{id}/download mendownload PDF
-[ ] GET /api/ideb/search mengembalikan data dengan pagination
-[ ] POST dengan NIK tidak ada memicu FAILED di WebSocket dan ideb_failure_logs
-[ ] Flowable tables (ACT_*) terbuat otomatis di database
+[ ] Aplikasi start tanpa error, log menunjukkan "idebReportProcess" terdeploy oleh Flowable
+[ ] GET /actuator/health mengembalikan status UP dengan koneksi database aktif
+[ ] GET /mock/slik-data menampilkan halaman tabel SLIK (target scraping)
+[ ] POST /api/ideb/scrape mengembalikan HTTP 202 Accepted langsung (non-blocking)
+[ ] WebSocket tester menerima urutan notifikasi: SCRAPING → VALIDATING → GENERATING_PDF → SAVING → SUCCESS
+[ ] File PDF tersimpan di folder pdf-output/ dan dapat didownload via endpoint
+[ ] GET /api/ideb/report/{id}/download mendownload file PDF SLIK yang valid
+[ ] GET /api/ideb/search berfungsi dengan semua kombinasi filter (nama, NIK, status, tanggal)
+[ ] Tabel Flowable (ACT_HI_*, ACT_RE_*, dll) terbuat otomatis di database
+```
+
+### BPMN Error Boundary (Wajib Diverifikasi)
+```
+[ ] Skenario 3  : app.pdf.simulate-failure=true → WebSocket menerima [FAILED] PDF_GENERATION_FAILED
+[ ] Skenario 3  : Record tersimpan di tabel ideb_failure_logs dengan error_code = 'PDF_GENERATION_FAILED'
+[ ] Skenario 3  : act_hi_actinst menunjukkan urutan task berakhir di pdfErrorBoundary → handleErrorTask → errorEndEvent
+[ ] Skenario 3b : NIK tidak valid → WebSocket menerima [FAILED] SCRAPING_FAILED
+[ ] Skenario 3b : Record tersimpan di ideb_failure_logs dengan error_code = 'SCRAPING_FAILED'
+[ ] Skenario 3b : act_hi_actinst menunjukkan urutan task berakhir di scrapeErrorBoundary → handleErrorTask → errorEndEvent
+[ ] GET /api/ideb/failures mengembalikan daftar semua log kegagalan yang tersimpan
+```
+
+### Setelah Pengujian Error Boundary Selesai
+```
+[ ] app.pdf.simulate-failure dikembalikan ke false
+[ ] Happy path (Skenario 1) dijalankan ulang untuk memastikan sistem kembali normal
 ```
