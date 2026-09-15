@@ -103,5 +103,5 @@ Detail arsitektur lebih lanjut dapat dilihat di [docs/ARCHITECTURE.md](docs/ARCH
 ## Testing & Video Demo
 
 - Panduan skenario pengujian, collection Hoppscotch, dan verifikasi SQL tersedia di [docs/TESTING.md](file:///d:/Projects/slik-ideb-service/docs/TESTING.md).
-- Panduan rekaman dan checklist **Video Demo** pengujian aplikasi tersedia di [docs/screenshots/README.md](file:///d:/Projects/slik-ideb-service/docs/screenshots/README.md).
+- Panduan rekaman dan checklist **Video Demo** pengujian aplikasi tersedia di [docs/demo/README.md](file:///d:/Projects/slik-ideb-service/docs/demo/README.md).
 

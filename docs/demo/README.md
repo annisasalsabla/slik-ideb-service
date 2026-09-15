@@ -17,9 +17,8 @@ seluruh alur pengujian secara end-to-end.
 | 4 | Real-time WebSocket | Event berurutan: `SCRAPING → VALIDATING → GENERATING_PDF → SAVING → SUCCESS` |
 | 5 | Download PDF | Buka file PDF SLIK hasil generate |
 | 6 | Error Boundary — Scraping | NIK tidak valid → `[FAILED] SCRAPING_FAILED` di WebSocket |
-| 7 | Error Boundary — PDF | `simulate-failure=true` → `[FAILED] PDF_GENERATION_FAILED` di WebSocket |
-| 8 | Tabel Flowable di DB | Query `act_hi_procinst` menunjukkan `end_activity_id_ = errorEndEvent` |
-| 9 | GET `/api/ideb/search` | Filter dinamis `nasabahName`, `statusKredit`, `startDate`, `endDate` |
+| 7 | Tabel Flowable di DB | Query `act_hi_procinst` menunjukkan `end_activity_id_ = errorEndEvent` |
+| 8 | GET `/api/ideb/search` | Filter dinamis `nasabahName`, `statusKredit`, `startDate`, `endDate` |
 
 ---
 
