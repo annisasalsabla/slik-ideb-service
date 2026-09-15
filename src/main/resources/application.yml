@@ -1,0 +1,78 @@
+﻿server:
+  port: 8080
+
+spring:
+  application:
+    name: slik-ideb-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/slik_ideb_db
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      connection-timeout: 30000
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    show-sql: true
+  thymeleaf:
+    cache: false
+    mode: HTML
+    encoding: UTF-8
+
+# Konfigurasi Flowable
+flowable:
+  database-schema-update: true
+  async-executor-activate: true
+  # Lokasi file BPMN di classpath
+  process-definition-location-prefix: classpath:/processes/
+  process-definition-location-suffixes:
+    - "**.bpmn20.xml"
+    - "**.bpmn"
+
+# Konfigurasi custom aplikasi
+app:
+  scraping:
+    # URL halaman mock yang akan di-scrape oleh Playwright
+    # Saat aplikasi berjalan di port 8080, halaman ini tersedia di:
+    target-url: http://localhost:8080/mock/slik-data
+    timeout-ms: 30000
+  pdf:
+    output-dir: D:/Projects/slik-ideb-service/pdf-output
+    # Set true untuk mensimulasikan kegagalan PDF (testing Error Boundary BPMN)
+    simulate-failure: false
+
+# Actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,flowable
+  endpoint:
+    health:
+      show-details: always
+  info:
+    env:
+      enabled: true
+
+info:
+  app:
+    name: SLIK IDEB Service
+    version: 1.0.0
+    description: Microservice Generate Laporan SLIK/IDEB
+
+# Logging
+logging:
+  level:
+    co.id.skyworx.slikideb: DEBUG
+    org.flowable: INFO
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
