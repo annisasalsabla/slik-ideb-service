@@ -5,7 +5,7 @@ seluruh alur pengujian secara end-to-end.
 
 ## Video Demo
 
-> Link video demo: **[Lampirkan link video di sini sebelum submit]**
+> 🎬 **Link video demo:** [**Tonton Video Demo**](https://drive.google.com/file/d/1Oldd-ccqldu3XekvwKdHVjGyv4KFG1qq/view?usp=drivesdk)
 
 ### Isi yang Ditunjukkan dalam Video
 
