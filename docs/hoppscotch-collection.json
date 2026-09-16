@@ -1,110 +1,393 @@
-﻿[
-  {
-    "v": 1,
-    "name": "SLIK IDEB Service - API Collection",
-    "folders": [
-      {
-        "id": "folder-ideb",
-        "name": "IDEB Endpoints",
-        "requests": [
-          {
-            "id": "req-scrape",
-            "name": "POST - Generate SLIK Report (Scrape)",
-            "url": "http://localhost:8080/api/ideb/scrape",
+{
+  "v": 11,
+  "id": "cmu26por21f93di1i39ux2bk8",
+  "name": "test API backend",
+  "folders": [],
+  "requests": [
+    {
+      "v": "17",
+      "name": "POST",
+      "method": "POST",
+      "endpoint": "http://localhost:8080/api/ideb/scrape",
+      "params": [],
+      "headers": [],
+      "preRequestScript": "",
+      "testScript": "",
+      "auth": {
+        "authType": "inherit",
+        "authActive": true
+      },
+      "body": {
+        "contentType": "application/json",
+        "body": "{ \"nasabahName\": \"Budi Santoso\" }"
+      },
+      "requestVariables": [],
+      "responses": {
+        "Response": {
+          "name": "Response",
+          "originalRequest": {
+            "v": "6",
+            "name": "POST",
             "method": "POST",
-            "headers": [
-              { "key": "Content-Type", "value": "application/json", "active": true }
-            ],
+            "endpoint": "http://localhost:8080/api/ideb/scrape",
+            "headers": [],
+            "params": [],
             "body": {
               "contentType": "application/json",
-              "body": "{\n  \"nik\": \"3174012501900001\",\n  \"nasabahName\": \"Budi Santoso\"\n}"
+              "body": "{ \"nasabahName\": \"Budi Santoso\" }"
             },
-            "description": "Memulai proses generate SLIK report secara async via Flowable. Return 202 Accepted + requestId."
+            "auth": {
+              "authType": "none",
+              "authActive": true
+            },
+            "requestVariables": []
           },
-          {
-            "id": "req-search",
-            "name": "GET - Search Laporan IDEB",
-            "url": "http://localhost:8080/api/ideb/search?nasabahName=Budi&statusKredit=LANCAR&startDate=2026-01-01&endDate=2026-12-31&page=0&size=10",
+          "status": "202 Accepted",
+          "code": 202,
+          "headers": [
+            {
+              "key": "Transfer-Encoding",
+              "value": "chunked"
+            },
+            {
+              "key": "Date",
+              "value": "Tue, 15 Sep 2026 04:44:27 GMT"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "key": "Vary",
+              "value": "Origin"
+            }
+          ],
+          "body": "{\"success\":true,\"status\":202,\"message\":\"Request accepted, processing in background\",\"data\":{\"status\":\"ACCEPTED\",\"requestId\":\"51313f26-c38b-4fb2-a0a4-2532600d4a6f\",\"message\":\"SLIK report generation is in progress. Monitor updates via WebSocket.\",\"websocketTopic\":\"/topic/ideb/51313f26-c38b-4fb2-a0a4-2532600d4a6f\"},\"timestamp\":\"2026-09-15T11:44:27.1442948\"}"
+        }
+      },
+      "description": null
+    },
+    {
+      "v": "17",
+      "name": "GET all",
+      "method": "GET",
+      "endpoint": "http://localhost:8080/api/ideb/search",
+      "params": [],
+      "headers": [],
+      "preRequestScript": "",
+      "testScript": "",
+      "auth": {
+        "authType": "inherit",
+        "authActive": true
+      },
+      "body": {
+        "contentType": null,
+        "body": null
+      },
+      "requestVariables": [],
+      "responses": {
+        "Response": {
+          "name": "Response",
+          "originalRequest": {
+            "v": "6",
+            "name": "GET all",
             "method": "GET",
+            "endpoint": "http://localhost:8080/api/ideb/search",
             "headers": [],
-            "body": { "contentType": "application/json", "body": "" },
-            "description": "Pencarian laporan IDEB dengan filter dinamis QueryDSL. Semua parameter opsional."
-          },
-          {
-            "id": "req-download",
-            "name": "GET - Download PDF Report",
-            "url": "http://localhost:8080/api/ideb/report/1/download",
-            "method": "GET",
-            "headers": [],
-            "body": { "contentType": "application/json", "body": "" },
-            "description": "Download PDF laporan sebagai file attachment. Ganti {1} dengan ID laporan yang valid."
-          },
-          {
-            "id": "req-failures",
-            "name": "GET - List Log Kegagalan",
-            "url": "http://localhost:8080/api/ideb/failures",
-            "method": "GET",
-            "headers": [],
-            "body": { "contentType": "application/json", "body": "" },
-            "description": "Mendapatkan semua log kegagalan proses BPMN (dari tabel ideb_failure_logs)."
-          },
-          {
-            "id": "req-health",
-            "name": "GET - Health Check (Actuator)",
-            "url": "http://localhost:8080/actuator/health",
-            "method": "GET",
-            "headers": [],
-            "body": { "contentType": "application/json", "body": "" },
-            "description": "Cek health aplikasi termasuk status database dan Flowable."
-          },
-          {
-            "id": "req-scrape-macet",
-            "name": "POST - Generate (NIK Macet - Ahmad Fauzi)",
-            "url": "http://localhost:8080/api/ideb/scrape",
-            "method": "POST",
-            "headers": [
-              { "key": "Content-Type", "value": "application/json", "active": true }
-            ],
+            "params": [],
             "body": {
-              "contentType": "application/json",
-              "body": "{\n  \"nik\": \"3578041204920003\",\n  \"nasabahName\": \"Ahmad Fauzi\"\n}"
+              "contentType": null,
+              "body": null
             },
-            "description": "Test dengan nasabah status MACET (Ahmad Fauzi)."
+            "auth": {
+              "authType": "none",
+              "authActive": true
+            },
+            "requestVariables": []
           },
-          {
-            "id": "req-scrape-notfound",
-            "name": "POST - Generate (NIK Tidak Ada - Expect FAILED)",
-            "url": "http://localhost:8080/api/ideb/scrape",
-            "method": "POST",
-            "headers": [
-              { "key": "Content-Type", "value": "application/json", "active": true }
-            ],
+          "status": "200 OK",
+          "code": 200,
+          "headers": [
+            {
+              "key": "Transfer-Encoding",
+              "value": "chunked"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "key": "Date",
+              "value": "Wed, 16 Sep 2026 02:16:17 GMT"
+            },
+            {
+              "key": "Vary",
+              "value": "Origin"
+            }
+          ],
+          "body": "{\"success\":true,\"status\":200,\"message\":\"Found 7 reports\",\"data\":{\"content\":[{\"id\":7,\"requestId\":\"fd90c522-9c1a-4b02-a20e-831d72a2f18c\",\"createdAt\":\"2026-09-15T16:22:48.516428\",\"downloadUrl\":\"http://localhost:8080/api/ideb/report/7/download\"},{\"id\":6,\"requestId\":\"87113e97-dcdf-4e57-8067-d516fbfc28e9\",\"nasabahName\":\"Budi Santoso\",\"statusKredit\":\"LANCAR\",\"nominalTagihan\":150000000.00,\"createdAt\":\"2026-09-15T16:22:14.394349\",\"downloadUrl\":\"http://localhost:8080/api/ideb/report/6/download\"},{\"id\":2,\"requestId\":\"4a862df4-3ee7-4d2c-881d-5602bde96066\",\"nasabahName\":\"Budi Santoso\",\"statusKredit\":\"LANCAR\",\"nominalTagihan\":150000000.00,\"createdAt\":\"2026-09-15T16:07:45.896501\",\"downloadUrl\":\"http://localhost:8080/api/ideb/report/2/download\"},{\"id\":5,\"requestId\":\"dummy-req-005-indah\",\"nasabahName\":\"Indah Permatasari\",\"statusKredit\":\"LANCAR\",\"nominalTagihan\":500000000.00,\"createdAt\":\"2026-09-15T08:00:00\",\"downloadUrl\":\"http://localhost:8080/api/ideb/report/5/download\"},{\"id\":4,\"requestId\":\"dummy-req-004-dewi-failed\",\"nasabahName\":\"Dewi Kusumawati\",\"createdAt\":\"2026-09-12T11:00:00\",\"downloadUrl\":\"http://localhost:8080/api/ideb/report/4/download\"},{\"id\":3,\"requestId\":\"dummy-req-003-ahmad-fauzi\",\"nasabahName\":\"Ahmad Fauzi\",\"statusKredit\":\"MACET\",\"nominalTagihan\":320000000.00,\"createdAt\":\"2026-09-10T09:15:00\",\"downloadUrl\":\"http://localhost:8080/api/ideb/report/3/download\"},{\"id\":1,\"requestId\":\"dummy-req-002-siti-rahayu\",\"nasabahName\":\"Siti Rahayu\",\"statusKredit\":\"DALAM PERHATIAN KHUSUS\",\"nominalTagihan\":85000000.00,\"createdAt\":\"2026-09-05T14:30:00\",\"downloadUrl\":\"http://localhost:8080/api/ideb/report/1/download\"}],\"pageable\":{\"pageNumber\":0,\"pageSize\":10,\"sort\":{\"empty\":false,\"sorted\":true,\"unsorted\":false},\"offset\":0,\"paged\":true,\"unpaged\":false},\"last\":true,\"totalElements\":7,\"totalPages\":1,\"size\":10,\"number\":0,\"sort\":{\"empty\":false,\"sorted\":true,\"unsorted\":false},\"first\":true,\"numberOfElements\":7,\"empty\":false},\"timestamp\":\"2026-09-16T09:16:17.4668915\"}"
+        }
+      },
+      "description": null
+    },
+    {
+      "v": "17",
+      "name": "GET search?nasabahName",
+      "method": "GET",
+      "endpoint": "http://localhost:8080/api/ideb/search?nasabahName=budi",
+      "params": [],
+      "headers": [],
+      "preRequestScript": "",
+      "testScript": "",
+      "auth": {
+        "authType": "inherit",
+        "authActive": true
+      },
+      "body": {
+        "contentType": null,
+        "body": null
+      },
+      "requestVariables": [],
+      "responses": {
+        "Response": {
+          "name": "Response",
+          "originalRequest": {
+            "v": "6",
+            "name": "GET search?nasabahName",
+            "method": "GET",
+            "endpoint": "http://localhost:8080/api/ideb/search?nasabahName=budi",
+            "headers": [],
+            "params": [],
             "body": {
-              "contentType": "application/json",
-              "body": "{\n  \"nik\": \"9999999999999999\",\n  \"nasabahName\": null\n}"
+              "contentType": null,
+              "body": null
             },
-            "description": "Test skenario gagal: NIK tidak ditemukan di halaman mock -> SCRAPING_FAILED -> handleErrorDelegate."
+            "auth": {
+              "authType": "none",
+              "authActive": true
+            },
+            "requestVariables": []
           },
-          {
-            "id": "req-search-macet",
-            "name": "GET - Search Status MACET",
-            "url": "http://localhost:8080/api/ideb/search?statusKredit=MACET&page=0&size=10",
+          "status": "200 OK",
+          "code": 200,
+          "headers": [
+            {
+              "key": "Date",
+              "value": "Wed, 16 Sep 2026 02:16:02 GMT"
+            },
+            {
+              "key": "Vary",
+              "value": "Origin"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "key": "Transfer-Encoding",
+              "value": "chunked"
+            }
+          ],
+          "body": "{\"success\":true,\"status\":200,\"message\":\"Found 2 reports\",\"data\":{\"content\":[{\"id\":6,\"requestId\":\"87113e97-dcdf-4e57-8067-d516fbfc28e9\",\"nasabahName\":\"Budi Santoso\",\"statusKredit\":\"LANCAR\",\"nominalTagihan\":150000000.00,\"createdAt\":\"2026-09-15T16:22:14.394349\",\"downloadUrl\":\"http://localhost:8080/api/ideb/report/6/download\"},{\"id\":2,\"requestId\":\"4a862df4-3ee7-4d2c-881d-5602bde96066\",\"nasabahName\":\"Budi Santoso\",\"statusKredit\":\"LANCAR\",\"nominalTagihan\":150000000.00,\"createdAt\":\"2026-09-15T16:07:45.896501\",\"downloadUrl\":\"http://localhost:8080/api/ideb/report/2/download\"}],\"pageable\":{\"pageNumber\":0,\"pageSize\":10,\"sort\":{\"empty\":false,\"sorted\":true,\"unsorted\":false},\"offset\":0,\"paged\":true,\"unpaged\":false},\"last\":true,\"totalElements\":2,\"totalPages\":1,\"size\":10,\"number\":0,\"sort\":{\"empty\":false,\"sorted\":true,\"unsorted\":false},\"first\":true,\"numberOfElements\":2,\"empty\":false},\"timestamp\":\"2026-09-16T09:16:02.2468183\"}"
+        }
+      },
+      "description": null
+    },
+    {
+      "v": "17",
+      "name": "GET search?statusKredit",
+      "method": "GET",
+      "endpoint": "http://localhost:8080/api/ideb/search?statusKredit=LANCAR",
+      "params": [],
+      "headers": [],
+      "preRequestScript": "",
+      "testScript": "",
+      "auth": {
+        "authType": "inherit",
+        "authActive": true
+      },
+      "body": {
+        "contentType": null,
+        "body": null
+      },
+      "requestVariables": [],
+      "responses": {
+        "Response": {
+          "name": "Response",
+          "originalRequest": {
+            "v": "6",
+            "name": "GET search?statusKredit",
             "method": "GET",
+            "endpoint": "http://localhost:8080/api/ideb/search?statusKredit=LANCAR",
             "headers": [],
-            "body": { "contentType": "application/json", "body": "" },
-            "description": "Filter khusus status kredit MACET."
+            "params": [],
+            "body": {
+              "contentType": null,
+              "body": null
+            },
+            "auth": {
+              "authType": "none",
+              "authActive": true
+            },
+            "requestVariables": []
           },
-          {
-            "id": "req-mock-page",
-            "name": "GET - Halaman Mock SLIK (Target Scraping)",
-            "url": "http://localhost:8080/mock/slik-data",
+          "status": "200 OK",
+          "code": 200,
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "key": "Vary",
+              "value": "Origin"
+            },
+            {
+              "key": "Transfer-Encoding",
+              "value": "chunked"
+            },
+            {
+              "key": "Date",
+              "value": "Wed, 16 Sep 2026 02:16:30 GMT"
+            }
+          ],
+          "body": "{\"success\":true,\"status\":200,\"message\":\"Found 3 reports\",\"data\":{\"content\":[{\"id\":6,\"requestId\":\"87113e97-dcdf-4e57-8067-d516fbfc28e9\",\"nasabahName\":\"Budi Santoso\",\"statusKredit\":\"LANCAR\",\"nominalTagihan\":150000000.00,\"createdAt\":\"2026-09-15T16:22:14.394349\",\"downloadUrl\":\"http://localhost:8080/api/ideb/report/6/download\"},{\"id\":2,\"requestId\":\"4a862df4-3ee7-4d2c-881d-5602bde96066\",\"nasabahName\":\"Budi Santoso\",\"statusKredit\":\"LANCAR\",\"nominalTagihan\":150000000.00,\"createdAt\":\"2026-09-15T16:07:45.896501\",\"downloadUrl\":\"http://localhost:8080/api/ideb/report/2/download\"},{\"id\":5,\"requestId\":\"dummy-req-005-indah\",\"nasabahName\":\"Indah Permatasari\",\"statusKredit\":\"LANCAR\",\"nominalTagihan\":500000000.00,\"createdAt\":\"2026-09-15T08:00:00\",\"downloadUrl\":\"http://localhost:8080/api/ideb/report/5/download\"}],\"pageable\":{\"pageNumber\":0,\"pageSize\":10,\"sort\":{\"empty\":false,\"sorted\":true,\"unsorted\":false},\"offset\":0,\"paged\":true,\"unpaged\":false},\"last\":true,\"totalElements\":3,\"totalPages\":1,\"size\":10,\"number\":0,\"sort\":{\"empty\":false,\"sorted\":true,\"unsorted\":false},\"first\":true,\"numberOfElements\":3,\"empty\":false},\"timestamp\":\"2026-09-16T09:16:30.3723618\"}"
+        }
+      },
+      "description": null
+    },
+    {
+      "v": "17",
+      "name": "GET search?startDate",
+      "method": "GET",
+      "endpoint": "http://localhost:8080/api/ideb/search?startDate=2026-09-15&endDate=2026-09-15",
+      "params": [],
+      "headers": [],
+      "preRequestScript": "",
+      "testScript": "",
+      "auth": {
+        "authType": "inherit",
+        "authActive": true
+      },
+      "body": {
+        "contentType": null,
+        "body": null
+      },
+      "requestVariables": [],
+      "responses": {
+        "Response": {
+          "name": "Response",
+          "originalRequest": {
+            "v": "6",
+            "name": "GET search?startDate",
             "method": "GET",
+            "endpoint": "http://localhost:8080/api/ideb/search?startDate=2026-09-15&endDate=2026-09-15",
             "headers": [],
-            "body": { "contentType": "application/json", "body": "" },
-            "description": "Tampilkan halaman HTML mock yang dijadikan target scraping Playwright."
-          }
-        ]
-      }
-    ]
-  }
-]
+            "params": [],
+            "body": {
+              "contentType": null,
+              "body": null
+            },
+            "auth": {
+              "authType": "none",
+              "authActive": true
+            },
+            "requestVariables": []
+          },
+          "status": "200 OK",
+          "code": 200,
+          "headers": [
+            {
+              "key": "Transfer-Encoding",
+              "value": "chunked"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "key": "Vary",
+              "value": "Origin"
+            },
+            {
+              "key": "Date",
+              "value": "Wed, 16 Sep 2026 02:16:39 GMT"
+            }
+          ],
+          "body": "{\"success\":true,\"status\":200,\"message\":\"Found 4 reports\",\"data\":{\"content\":[{\"id\":7,\"requestId\":\"fd90c522-9c1a-4b02-a20e-831d72a2f18c\",\"createdAt\":\"2026-09-15T16:22:48.516428\",\"downloadUrl\":\"http://localhost:8080/api/ideb/report/7/download\"},{\"id\":6,\"requestId\":\"87113e97-dcdf-4e57-8067-d516fbfc28e9\",\"nasabahName\":\"Budi Santoso\",\"statusKredit\":\"LANCAR\",\"nominalTagihan\":150000000.00,\"createdAt\":\"2026-09-15T16:22:14.394349\",\"downloadUrl\":\"http://localhost:8080/api/ideb/report/6/download\"},{\"id\":2,\"requestId\":\"4a862df4-3ee7-4d2c-881d-5602bde96066\",\"nasabahName\":\"Budi Santoso\",\"statusKredit\":\"LANCAR\",\"nominalTagihan\":150000000.00,\"createdAt\":\"2026-09-15T16:07:45.896501\",\"downloadUrl\":\"http://localhost:8080/api/ideb/report/2/download\"},{\"id\":5,\"requestId\":\"dummy-req-005-indah\",\"nasabahName\":\"Indah Permatasari\",\"statusKredit\":\"LANCAR\",\"nominalTagihan\":500000000.00,\"createdAt\":\"2026-09-15T08:00:00\",\"downloadUrl\":\"http://localhost:8080/api/ideb/report/5/download\"}],\"pageable\":{\"pageNumber\":0,\"pageSize\":10,\"sort\":{\"empty\":false,\"sorted\":true,\"unsorted\":false},\"offset\":0,\"paged\":true,\"unpaged\":false},\"last\":true,\"totalElements\":4,\"totalPages\":1,\"size\":10,\"number\":0,\"sort\":{\"empty\":false,\"sorted\":true,\"unsorted\":false},\"first\":true,\"numberOfElements\":4,\"empty\":false},\"timestamp\":\"2026-09-16T09:16:39.7811582\"}"
+        }
+      },
+      "description": null
+    },
+    {
+      "v": "17",
+      "name": "GET search?nasabahName fail",
+      "method": "GET",
+      "endpoint": "http://localhost:8080/api/ideb/search?nasabahName=zzznotexist",
+      "params": [],
+      "headers": [],
+      "preRequestScript": "",
+      "testScript": "",
+      "auth": {
+        "authType": "inherit",
+        "authActive": true
+      },
+      "body": {
+        "contentType": null,
+        "body": null
+      },
+      "requestVariables": [],
+      "responses": {
+        "Response": {
+          "name": "Response",
+          "originalRequest": {
+            "v": "6",
+            "name": "GET search?nasabahName fail",
+            "method": "GET",
+            "endpoint": "http://localhost:8080/api/ideb/search?nasabahName=zzznotexist",
+            "headers": [],
+            "params": [],
+            "body": {
+              "contentType": null,
+              "body": null
+            },
+            "auth": {
+              "authType": "none",
+              "authActive": true
+            },
+            "requestVariables": []
+          },
+          "status": "200 OK",
+          "code": 200,
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "key": "Transfer-Encoding",
+              "value": "chunked"
+            },
+            {
+              "key": "Date",
+              "value": "Wed, 16 Sep 2026 02:16:49 GMT"
+            },
+            {
+              "key": "Vary",
+              "value": "Origin"
+            }
+          ],
+          "body": "{\"success\":true,\"status\":200,\"message\":\"Found 0 reports\",\"data\":{\"content\":[],\"pageable\":{\"pageNumber\":0,\"pageSize\":10,\"sort\":{\"empty\":false,\"sorted\":true,\"unsorted\":false},\"offset\":0,\"paged\":true,\"unpaged\":false},\"last\":true,\"totalElements\":0,\"totalPages\":0,\"size\":10,\"number\":0,\"sort\":{\"empty\":false,\"sorted\":true,\"unsorted\":false},\"first\":true,\"numberOfElements\":0,\"empty\":true},\"timestamp\":\"2026-09-16T09:16:49.3016869\"}"
+        }
+      },
+      "description": null
+    }
+  ],
+  "auth": {
+    "authType": "inherit",
+    "authActive": true
+  },
+  "headers": [],
+  "variables": [],
+  "description": null
+}
